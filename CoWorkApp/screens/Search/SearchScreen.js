@@ -1,14 +1,14 @@
 import React from 'react';
 import { StyleSheet, View , Text, InteractionManager} from 'react-native';
-import Notification from '../components/Notification/Notification' 
+import Search from '../../components/Search/Search' 
 
 import connect from 'react-redux'
 
-class NotificationScreen extends React.Component{
+class SearchScreen extends React.Component{
  
     static navigationOptions = ({navigation}) => { 
         return {
-            title: navigation.getParam('Title', 'Notification'), 
+            title: navigation.getParam('Title', 'Search'), 
             headerStyle: {
                 backgroundColor: navigation.getParam('BackgroundColor'), 
             },
@@ -18,7 +18,7 @@ class NotificationScreen extends React.Component{
 
     buildContent(){ 
         let _content = [];
-        _content.push(<Notification key='1'></Notification>)
+        _content.push(<Search key='1'></Search>)
         return _content
     }
 
@@ -31,4 +31,4 @@ class NotificationScreen extends React.Component{
     };
 }  
 
-export default (NotificationScreen);
+export default (SearchScreen);

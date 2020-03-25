@@ -1,19 +1,19 @@
 import React from 'react'; 
-import { createAppContainer } from 'react-navigation';
+import { createAppContainer,createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator, createMaterialTopTabNavigator } from 'react-navigation-tabs';
 
-import HomeScreen from './screens/HomeScreen'
-import AccountScreen from './screens/AccountScreen'
-import BoardScreen from './screens/BoardScreen'
-import NotificationScreen from './screens/NotificationScreen'
-import SearchScreen from './screens/SearchScreen'
-import LoginScreen from './screens/LoginScreen'
-import SignUpScreen from './screens/SignUpScreen'
-
-import { store } from './redux/store'
+import HomeScreen from './screens/Home/HomeScreen'
+import AccountScreen from './screens/Account/AccountScreen'
+import BoardScreen from './screens/Board/BoardScreen'
+import NotificationScreen from './screens/Notification/NotificationScreen'
+import SearchScreen from './screens/Search/SearchScreen'
+import LoginScreen from './screens/Authentication/LoginScreen'
+import SignUpScreen from './screens/Authentication/SignUpScreen'
+import AuthLoadingScreen from './screens/Authentication/AuthLoadingScreen'
+ 
 import { themeConstants } from './redux/constant/theme.constant'
-
+ 
 import Ionicons from 'react-native-vector-icons/Ionicons';  
 import IconWithBadge from './helper/IconWithBadge'
 import { connect } from 'react-redux'
@@ -35,29 +35,25 @@ const setNavigationOptions = (title) => {
   }
 }
 
-function isLoginNavigate(){ 
-  const { loggedIn } =store.getState().accountReducer;
-  return loggedIn ? {HomeScreen, LoginScreen, SignUpScreen}: {LoginScreen,HomeScreen,SignUpScreen};
-}
-
-function isLoginOption(){ 
-  const { loggedIn } =store.getState().accountReducer;
-  return loggedIn ? {}: {
-    headerShown: false,
-    tabBarVisible :false,
-  };
-}
-
-const HomeStack = createStackNavigator(
-  isLoginNavigate(),{navigationOptions: 
-    isLoginOption()
+const LoginStack = createStackNavigator({
+  LoginScreen,
+  SignUpScreen
+},{ 
+  headerMode: 'none',
+  navigationOptions: setNavigationOptions("Welcome to CoWork")
+}); 
+ 
+const HomeStack = createStackNavigator({
+  HomeScreen,
+},{
+ navigationOptions: setNavigationOptions("Home")
 });
 
 const AccountStack = createStackNavigator({
      AccountScreen,
    },{
     navigationOptions: setNavigationOptions("Account")
- });
+});
 
 const BoardStack = createStackNavigator({
     BoardScreen,
@@ -79,10 +75,10 @@ const NotificationStack = createStackNavigator({
 
 const HomeIconWithBadge = props => {
   return <IconWithBadge {...props} badgeCount={3} />;
-}; 
-
+};  
+  
 const AppNavigator = createBottomTabNavigator(
-    { 
+  {  
     HomeStack,
     BoardStack,
     SearchStack,
@@ -121,12 +117,26 @@ const AppNavigator = createBottomTabNavigator(
       }, 
     })
 });
-  
-function mapStateToProps(store) {
-  const { loggedIn } = store.accountReducer;     
-  return { 
-      loggedIn,
-  };
-} 
 
-export default connect(mapStateToProps)(AppNavigator);
+
+const AuthStack = createStackNavigator({ LoginStack, });
+
+const check = createSwitchNavigator(
+  { 
+    AuthLoading: AuthLoadingScreen,
+    App: AppNavigator,
+    Auth: AuthStack,
+  },
+  {
+    initialRouteName: 'AuthLoading',
+  }
+);
+ 
+// function mapStateToProps(store) {
+//   const { loggedIn } = store.accountReducer;     
+//   return { 
+//       loggedIn,
+//   };
+// } 
+
+export default connect(null)(check);

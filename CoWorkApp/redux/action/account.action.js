@@ -1,21 +1,25 @@
 import { accountConstants } from '../constant/account.constant'
+import { accountService } from '../service/user.service'
+import {alertActions} from '../action/alert.action'
+ 
+import * as NavigationService from '../service/navigator.service'
 
 export const accountAction = {
     login,
+    logout
 };
  
-function login(user, password){
-    return dispatch => { 
+function login(info){  
+    return dispatch => {  
         dispatch(request());  
-        // handle call server
-        loginService.login(user, password)
+        // handle call server 
+        accountService.login(info)
         .then(
-            data => {   
-                AsyncStorage.setItem('loggedIn',true);
-                AsyncStorage.setItem('user',data.user);
-                dispatch(success(data.token)); 
+            data => {
+                dispatch(success(data.token));
+                NavigationService.navigate('App'); 
             },
-            error => {
+            error => {  
                 dispatch(failure(error.toString()));
                 dispatch(alertActions.error(error.toString()));
             }
@@ -24,5 +28,26 @@ function login(user, password){
     function request() { return { type: accountConstants.LOGIN_REQUEST} }
     function success(token) { return { type: accountConstants.LOGIN_SUCCESS, token} }
     function failure(error) { return { type: accountConstants.LOGIN_FAILURE, error} }
+}
+ 
+function logout(){  
+    return dispatch => {  
+        dispatch(request());
+        // handle call server 
+        accountService.logout()
+        .then(
+            data => {    
+                dispatch(success())
+                NavigationService.navigate('Auth');
+            },
+            error => {
+                dispatch(failure(error.toString()));
+                dispatch(alertActions.error(error.toString()));
+            }
+        ); 
+    } 
+    function request() { return { type: accountConstants.LOGOUT_REQUEST} } 
+    function success() { return { type: accountConstants.LOGOUT_SUCCESS} } 
+    function failure() { return { type: accountConstants.LOGOUT_FAILURE} }
 }
  

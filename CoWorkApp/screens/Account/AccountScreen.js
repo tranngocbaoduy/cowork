@@ -1,14 +1,14 @@
 import React from 'react';
 import { StyleSheet, View , Text, InteractionManager} from 'react-native';
-import Board from '../components/Board/Board'
+import Account from '../../components/Account/Account'
 
-import connect from 'react-redux'
+import {connect} from 'react-redux'
 
-class BoardScreen extends React.Component{
+export default class AccountScreen extends React.Component{
  
     static navigationOptions = ({navigation}) => { 
         return {
-            title: navigation.getParam('Title', 'Board'), 
+            title: navigation.getParam('Title', 'Account'), 
             headerStyle: {
                 backgroundColor: navigation.getParam('BackgroundColor'), 
             },
@@ -18,12 +18,11 @@ class BoardScreen extends React.Component{
 
     buildContent(){ 
         let _content = [];
-        _content.push(<Board key='1'></Board>);
-        return _content;
+        _content.push(<Account key='1'></Account>)
+        return _content
     }
 
-    render(){
-        const { mode } = this.props;
+    render(){ 
         return (
             <View>
                 {this.buildContent()} 
@@ -31,5 +30,4 @@ class BoardScreen extends React.Component{
         );
     };
 }  
-
-export default (BoardScreen);
+ 

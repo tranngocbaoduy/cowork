@@ -1,9 +1,11 @@
 import React from 'react'
-import { StyleSheet, Text, View, TextInput, Button, TouchableHighlight, Image, Alert} from 'react-native';
-
+import { StyleSheet, Text, View, TextInput, Button, AsyncStorage, TouchableHighlight, Image, Alert} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';  
-
-export default class Login extends React.Component{
+import { accountAction } from '../../redux/action/account.action'
+ 
+import { isEmpty } from '../../helper/String'
+import { connect } from 'react-redux'
+class Login extends React.Component{
 
     static navigationOptions = ({navigation}) => { 
         return {
@@ -15,18 +17,24 @@ export default class Login extends React.Component{
     constructor(props){
         super(props); 
         this.state = {
-            email   : '',
+            username : '',
             password: '',
         }
     }
 
     onClickListener = (viewId) => {
-        Alert.alert("Alert", "Button pressed "+viewId);
+        Alert.alert("Alert", "Button pressed "+viewId); 
     }
- 
+    _signInAsync = async () => {
+        const {username, password} = this.state;  
+        const {dispatch, token} = this.props;
+        if(!isEmpty(username) && !isEmpty(password)){
+            const info = { username, password}; 
+            dispatch(accountAction.login(info));
+        } 
+    };
     render(){   
-        const { navigation } = this.props; 
-        console.log( this.props)
+        const { navigation } = this.props;  
         const Icon = ({ name }) => (
             <Ionicons style={styles.inputIcon} size={25}
               name={`${Platform.OS === "ios" ? "ios" : "md"}-${name}`}
@@ -37,10 +45,10 @@ export default class Login extends React.Component{
                 <View style={styles.inputContainer}> 
                 <Icon name="person"/>
                 <TextInput style={styles.inputs}
-                    placeholder="Email"
+                    placeholder="Username"
                     keyboardType="email-address"
                     underlineColorAndroid='transparent'
-                    onChangeText={(email) => this.setState({email})}/>
+                    onChangeText={(username) => this.setState({username})}/>
                 </View>
                 
                 <View style={styles.inputContainer}>
@@ -52,7 +60,7 @@ export default class Login extends React.Component{
                     onChangeText={(password) => this.setState({password})}/>
                 </View>
 
-                <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={() => this.onClickListener('login')}>
+                <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={this._signInAsync}>
                     <Text style={styles.loginText}>Login</Text>
                 </TouchableHighlight>
 
@@ -117,5 +125,13 @@ const styles = StyleSheet.create({
     loginText: {
       color: 'white',
     }
-  });
-   
+});
+
+function mapStateToProps(store) {
+    const { token } = store.accountReducer; 
+    return { 
+        token
+    };
+} 
+  
+export default connect(mapStateToProps)(Login);

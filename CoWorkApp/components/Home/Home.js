@@ -1,9 +1,12 @@
-import React from 'react'
+import React from 'react';
 import {Text, View, Image,StyleSheet} from 'react-native';
+import { connect } from 'react-redux';
 
-export default class Home extends React.Component{
+import { themeActions } from '../../redux/action/theme.action'
+
+class Home extends React.Component{
     constructor(props){
-        super(props); 
+        super(props);   
     }
 
     render(){ 
@@ -30,3 +33,13 @@ const styles = StyleSheet.create({
         fontWeight:"500", 
     }
 });
+
+
+function mapStateToProps(store) {
+  const { loggedIn } = store.accountReducer;      
+  return { 
+      loggedIn,
+  };
+} 
+
+export default connect(mapStateToProps)(Home);

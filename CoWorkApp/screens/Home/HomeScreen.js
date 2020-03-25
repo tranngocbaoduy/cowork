@@ -1,9 +1,8 @@
 import React from 'react';
 import { StyleSheet, View , Text, InteractionManager} from 'react-native';
-import Home from '../components/Home/Home' 
+import Home from '../../components/Home/Home' 
 
-import { connect } from 'react-redux' 
-import LoginScreen from './LoginScreen';
+import { connect } from 'react-redux'  
 
 class HomeScreen extends React.Component{
  
@@ -25,23 +24,24 @@ class HomeScreen extends React.Component{
 
     buildContent(){ 
         let _content = [];
-        const { loggedIn } = this.props;
-        if(loggedIn){ 
-            _content.push(<Home key='1'></Home>)
-        }else{
-            _content.push(<LoginScreen key='1'></LoginScreen>)
-        }
+        const { loggedIn } = this.props; 
+        _content.push(<Home key='1'></Home>) 
         return _content
     }
 
     render(){ 
         return (
-            <View>
+            <View style={styles.container}>
                 {this.buildContent()} 
             </View> 
         );
     };
 }  
+const styles = {
+    container:{
+        flex:1
+    }
+}
 
 function mapStateToProps(store) {
     const { loggedIn } = store.accountReducer;     

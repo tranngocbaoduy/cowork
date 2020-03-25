@@ -6,7 +6,7 @@ import { connect, Provider} from 'react-redux'
 import AppNavigator from './AppNavigator'
 
 import { store } from './redux/store'
-
+import * as NavigatorService from './redux/service/navigator.service'
 const AppContainer = createAppContainer(AppNavigator)
 
 export default class App extends React.Component{ 
@@ -16,11 +16,14 @@ export default class App extends React.Component{
     this.state = { 
     } 
   }
+  componentDidMount() {
+    NavigatorService.setNavigator(this.navigator);
+  }
 
-  render(){ 
+  render(){  
     return ( 
       <Provider store={store}>  
-        <AppContainer/>  
+        <AppContainer ref={nav => { this.navigator = nav; }} />  
       </Provider>
     );
   };

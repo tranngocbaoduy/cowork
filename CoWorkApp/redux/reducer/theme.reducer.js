@@ -10,7 +10,7 @@ export function themeReducer(state = initalState, action) {
                     ...state,
                     mode: themeConstants.LIGHT
                 } 
-            }else{
+            } else {
                 return {
                     ...state,
                     mode: themeConstants.DARK

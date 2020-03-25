@@ -27,8 +27,7 @@ export default class SignUp extends React.Component{
     }
  
     render(){   
-        const { navigation } = this.props; 
-        console.log( this.props)
+        const { navigation } = this.props;  
         const Icon = ({ name }) => (
             <Ionicons style={styles.inputIcon} size={25}
               name={`${Platform.OS === "ios" ? "ios" : "md"}-${name}`}
@@ -64,12 +63,16 @@ export default class SignUp extends React.Component{
                 </View>
 
                 <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={() => this.onClickListener('login')}>
-                    <Text style={styles.loginText}>Login</Text>
-                </TouchableHighlight>
-
-                <TouchableHighlight style={styles.buttonContainer} onPress={() => this.onClickListener('restore_password')}>
-                    <Text>Forgot your password?</Text>
+                    <Text style={styles.loginText}>Sign in</Text>
                 </TouchableHighlight> 
+
+                <TouchableHighlight >
+                    <Button style={styles.buttonContainer} onPress={() =>  navigation.navigate('LoginScreen', {
+                            navigationName:'Login',
+                            BackgroundColor: navigation.getParam('BackgroundColor'), 
+                            HeaderTintColor: navigation.getParam('HeaderTintColor'),
+                        })} title='Login'></Button>
+                </TouchableHighlight>
             </View>
         );
     }

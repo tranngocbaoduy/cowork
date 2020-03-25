@@ -1,34 +1,41 @@
 import React from 'react';
-import { StyleSheet, View , Text, InteractionManager} from 'react-native';
-import Account from '../components/Account/Account'
+import { StyleSheet, View} from 'react-native';
+import SignUp from '../../components/Authentication/SignUp' 
 
 import connect from 'react-redux'
 
-class AccountScreen extends React.Component{
+class SignUpScreen extends React.Component{
  
     static navigationOptions = ({navigation}) => { 
         return {
-            title: navigation.getParam('Title', 'Account'), 
+            title: navigation.getParam('Title', 'Sign Up'), 
             headerStyle: {
                 backgroundColor: navigation.getParam('BackgroundColor'), 
             },
             headerTintColor: navigation.getParam('HeaderTintColor'), 
+
         };
-    };
+    }; 
 
     buildContent(){ 
         let _content = [];
-        _content.push(<Account key='1'></Account>)
+        const { navigation } = this.props;
+        _content.push(<SignUp key='1' navigation={navigation}></SignUp>)
         return _content
     }
 
     render(){ 
         return (
-            <View>
+            <View style={styles.container}>
                 {this.buildContent()} 
             </View> 
         );
     };
 }  
+const styles = {
+    container:{
+        flex:1,
+    }
+}
 
-export default (AccountScreen);
+export default (SignUpScreen);

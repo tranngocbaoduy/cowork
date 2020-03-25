@@ -1,0 +1,1 @@
+export const DOMAIN = 'https://e4461fc6.ngrok.io/api/'

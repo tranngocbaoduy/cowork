@@ -1,41 +1,34 @@
 import React from 'react';
-import { StyleSheet, View} from 'react-native';
-import Login from '../components/Login/Login' 
+import { StyleSheet, View , Text, InteractionManager} from 'react-native';
+import Notification from '../../components/Notification/Notification' 
 
 import connect from 'react-redux'
 
-class LoginScreen extends React.Component{
+class NotificationScreen extends React.Component{
  
     static navigationOptions = ({navigation}) => { 
         return {
-            title: navigation.getParam('Title', 'Login'), 
+            title: navigation.getParam('Title', 'Notification'), 
             headerStyle: {
                 backgroundColor: navigation.getParam('BackgroundColor'), 
             },
             headerTintColor: navigation.getParam('HeaderTintColor'), 
-
         };
-    }; 
+    };
 
     buildContent(){ 
         let _content = [];
-        const { navigation } = this.props;
-        _content.push(<Login key='1' navigation={navigation}></Login>)
+        _content.push(<Notification key='1'></Notification>)
         return _content
     }
 
     render(){ 
         return (
-            <View style={styles.container}>
+            <View>
                 {this.buildContent()} 
             </View> 
         );
     };
 }  
-const styles = {
-    container:{
-        flex:1,
-    }
-}
 
-export default (LoginScreen);
+export default (NotificationScreen);
