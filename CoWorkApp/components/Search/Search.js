@@ -1,5 +1,7 @@
 import React from 'react'
 import {Text, View, Image,StyleSheet} from 'react-native';
+import SearchBar from "./SearchBar";
+import SearchRecentList from "./SearchRecentList";
 
 export default class Search extends React.Component{
     constructor(props){
@@ -9,7 +11,8 @@ export default class Search extends React.Component{
     render(){ 
         return(
             <View style={styles.container}>
-                <Text>This is Search Screen</Text> 
+                <SearchBar/>
+                <SearchRecentList/>
             </View>
         );
     }
@@ -18,8 +21,7 @@ export default class Search extends React.Component{
 const styles = StyleSheet.create({
     container:{
         justifyContent:'center',
-        padding:8, 
-        backgroundColor:'#ffffff', 
+        backgroundColor:'#ffffff',
         shadowOpacity:0.3,
         borderRadius:3, 
         marginBottom:10, 

@@ -17,9 +17,7 @@ class SearchScreen extends React.Component{
     };
 
     buildContent(){ 
-        let _content = [];
-        _content.push(<Search key='1'></Search>)
-        return _content
+        return (<Search key='1'></Search>)
     }
 
     render(){ 

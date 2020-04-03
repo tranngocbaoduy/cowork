@@ -128,15 +128,15 @@ const check = createSwitchNavigator(
     Auth: AuthStack,
   },
   {
-    initialRouteName: 'AuthLoading',
+    initialRouteName: 'App',
   }
 );
  
 // function mapStateToProps(store) {
-//   const { loggedIn } = store.accountReducer;     
-//   return { 
+//   const { loggedIn } = store.accountReducer;
+//   return {
 //       loggedIn,
 //   };
-// } 
+// }
 
 export default connect(null)(check);
