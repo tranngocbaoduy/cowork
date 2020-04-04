@@ -1,0 +1,38 @@
+import React from 'react'
+import {View, Text, SectionList} from "react-native";
+import SearchResultItem from "./SearchResultItem";
+
+const data = [{
+    title: 'Board',
+    data: [
+        {title: 'Study', date: '21/03/2020, 9:30', memberCount: 5},
+        {title: 'Study', date: '21/03/2020, 9:30', memberCount: 5},
+        {title: 'Study', date: '21/03/2020, 9:30', memberCount: 5},
+    ],
+}, {
+    title: 'Task',
+    data: [
+        {title: 'Study English - Listening Category ', date: '21/03/2020, 9:30', memberCount: 5},
+        {title: 'Study English - Listening Category ', date: '21/03/2020, 9:30', memberCount: 5},
+    ],
+}];
+
+export default class SearchResultList extends React.Component {
+    render() {
+        return (
+            <View style={{}}>
+                <SectionList
+                    ItemSeparatorComponent={({_}) => (
+                        <View style={{height: 1, backgroundColor: '#80808080'}} />
+                        )}
+                    keyExtractor={(item, index) => item + index}
+                    sections={data}
+                    renderItem={({item}) => <SearchResultItem item={item}/>}
+                    renderSectionHeader={({section: {title}}) => (
+                        <Text style={{padding: 8, backgroundColor: 'white'}}>{title}</Text>
+                    )}
+                />
+            </View>
+        )
+    }
+}

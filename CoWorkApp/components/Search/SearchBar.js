@@ -8,13 +8,18 @@ export default class SearchBar extends React.Component {
     }
 
     render() {
+        const {onSearch} = this.props;
         return (
             <View style={styles.container}>
                 <View style={{
                     flex: 1, flexDirection: 'row', alignItems: 'center'
                 }}>
                     <Icon name="md-search" size={20} color={"#000"}/>
-                    <TextInput style={{flex: 1, marginLeft: 12, height: 40, color: '#000'}} placeholder="Search"/>
+                    <TextInput
+                        placeholder="Search"
+                        style={{flex: 1, marginLeft: 12, height: 40, color: '#000'}}
+                        onChangeText={text => onSearch(text)}
+                    />
                 </View>
 
             </View>
@@ -26,7 +31,7 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
         padding: 8,
-        margin:8,
+        margin: 8,
         backgroundColor: '#ffffff',
         borderRadius: 10,
         borderColor: '#9C9C9C',

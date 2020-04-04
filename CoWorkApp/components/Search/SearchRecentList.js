@@ -12,7 +12,7 @@ export default class SearchRecentList extends React.Component {
                         {key: 'Devin'},
                         {key: 'Dan'},
                         {key: 'Dominic'},
-                        {key: 'Jackson'},+
+                        {key: 'Jackson'},
                         {key: 'James'},
                         {key: 'Joel'},
                         {key: 'John'},
