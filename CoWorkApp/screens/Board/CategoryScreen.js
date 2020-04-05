@@ -1,15 +1,14 @@
 import React from 'react';
 import { StyleSheet, View , Text, InteractionManager} from 'react-native';
-import Search from '../../components/Search/Search' 
-import TextSearch from '../../components/Search/TextSearch'
+import Board from '../../components/Board/Board'
 
 import connect from 'react-redux'
 
-class SearchScreen extends React.Component{
+class CategoryScreen extends React.PureComponent{
  
     static navigationOptions = ({navigation}) => { 
         return {
-            title: navigation.getParam('Title', 'Search'), 
+            title: navigation.getParam('Title', 'Category'), 
             headerStyle: {
                 backgroundColor: navigation.getParam('BackgroundColor'), 
             },
@@ -19,12 +18,12 @@ class SearchScreen extends React.Component{
 
     buildContent(){ 
         let _content = [];
-        _content.push(<Search key='1'></Search>)
-        _content.push(<TextSearch key='2' text='what is it?' ti="abc"></TextSearch>)
-        return _content
+        _content.push(<Text key='1'>this is category</Text>);
+        return _content;
     }
 
-    render(){ 
+    render(){
+        const { mode } = this.props;
         return (
             <View>
                 {this.buildContent()} 
@@ -32,5 +31,5 @@ class SearchScreen extends React.Component{
         );
     };
 }  
-  
-export default (SearchScreen);
+
+export default (CategoryScreen);

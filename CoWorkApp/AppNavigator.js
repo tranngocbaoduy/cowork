@@ -11,6 +11,7 @@ import SearchScreen from './screens/Search/SearchScreen'
 import LoginScreen from './screens/Authentication/LoginScreen'
 import SignUpScreen from './screens/Authentication/SignUpScreen'
 import AuthLoadingScreen from './screens/Authentication/AuthLoadingScreen'
+import CategoryScreen from './screens/Board/CategoryScreen'
  
 import { themeConstants } from './redux/constant/theme.constant'
  
@@ -57,6 +58,7 @@ const AccountStack = createStackNavigator({
 
 const BoardStack = createStackNavigator({
     BoardScreen,
+    CategoryScreen
    },{
     navigationOptions: setNavigationOptions("Board")
  });
@@ -131,12 +133,5 @@ const check = createSwitchNavigator(
     initialRouteName: 'AuthLoading',
   }
 );
- 
-// function mapStateToProps(store) {
-//   const { loggedIn } = store.accountReducer;     
-//   return { 
-//       loggedIn,
-//   };
-// } 
 
-export default connect(null)(check);
+export default connect(null)(AppNavigator);

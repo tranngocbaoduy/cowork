@@ -1,8 +1,11 @@
 import React from 'react';
-import { StyleSheet, View , Text, InteractionManager} from 'react-native';
+import { StyleSheet, View , Button, InteractionManager} from 'react-native';
 import Board from '../../components/Board/Board'
 
 import connect from 'react-redux'
+
+import * as NavigationService from '../../redux/service/navigator.service'
+
 
 class BoardScreen extends React.Component{
  
@@ -19,6 +22,13 @@ class BoardScreen extends React.Component{
     buildContent(){ 
         let _content = [];
         _content.push(<Board key='1'></Board>);
+        _content.push(<Board key='2'></Board>);
+        _content.push(<Button key='3' title='abc'
+            onPress={()=>{
+                NavigationService.navigate('CategoryScreen')
+            }}
+
+        ></Button>);
         return _content;
     }
 

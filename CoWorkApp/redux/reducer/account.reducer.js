@@ -9,7 +9,7 @@ export function accountReducer(state = initalState, action) {
         case accountConstants.LOGIN_REQUEST: 
             return {
                 ...state,
-                loading: true
+                loading: true,
             }  
         case accountConstants.LOGIN_SUCCESS:
             return {
@@ -21,9 +21,13 @@ export function accountReducer(state = initalState, action) {
         case accountConstants.LOGIN_FAILURE: 
             return {
                 error: action.error,
+                failed: true,
             }   
         case accountConstants.LOGOUT_SUCCESS:
-            return { }
+            return { 
+                failed: false,
+                token: "",
+            }
         case accountConstants.LOGOUT_FAILURE: 
             return {
                 error: action.error,

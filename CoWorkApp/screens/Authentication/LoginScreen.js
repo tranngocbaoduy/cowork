@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View} from 'react-native';
+import { StyleSheet,ImageBackground, View, Image} from 'react-native';
 import Login from '../../components/Authentication/Login' 
  
 import { connect,Provider } from 'react-redux'
@@ -25,16 +25,25 @@ export default class LoginScreen extends React.Component{
     }
 
     render(){ 
+        let image = require('../../assets/bg.jpeg')
         return (  
             <View style={styles.container}>
-                {this.buildContent()} 
+                <ImageBackground source={image} style={styles.image} imageStyle={{opacity: 0.5}}> 
+                    {this.buildContent()}  
+                </ImageBackground>
             </View>  
         );
     };
 }  
-const styles = {
+const styles = StyleSheet.create({
     container:{
         flex:1,
-    }
-}
+    },
+    image:{
+        flex: 1,
+        resizeMode: "cover",
+        justifyContent: "center", 
+        backgroundColor:'rgba(255,0,0,0)',
+    }, 
+})
  

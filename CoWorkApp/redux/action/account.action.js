@@ -6,9 +6,9 @@ import * as NavigationService from '../service/navigator.service'
 
 export const accountAction = {
     login,
-    logout
+    logout,
 };
- 
+
 function login(info){  
     return dispatch => {  
         dispatch(request());  
