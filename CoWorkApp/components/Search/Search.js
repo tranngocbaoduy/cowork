@@ -3,6 +3,7 @@ import {Text, View, ScrollView, Image, StyleSheet} from 'react-native';
 import SearchBar from "./SearchBar";
 import SearchRecentList from "./SearchRecentList";
 import SearchResultList from "./SearchResutlList";
+import SearchNoResult from "./SearchNoResult";
 
 export default class Search extends React.Component {
     constructor(props) {
@@ -28,8 +29,9 @@ export default class Search extends React.Component {
 const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
-        backgroundColor: '#ffffff',
+        // backgroundColor: '#ffffff',
         // shadowOpacity:0.3,
+        height:'100%',
         borderRadius: 3,
         marginBottom: 10,
         shadowOffset: {width: 0, height: 0}
