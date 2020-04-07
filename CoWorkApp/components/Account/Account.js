@@ -4,6 +4,7 @@ import { accountAction } from '../../redux/action/account.action'
 
 import { isEmpty } from '../../helper/String'
 import {connect} from 'react-redux'
+import UserInfor from "./UserInfor";
 
 class Account extends React.Component{
     constructor(props){
@@ -13,13 +14,12 @@ class Account extends React.Component{
     _logoutAsync = () => {
         const { dispatch, token } = this.props;
         dispatch(accountAction.logout()); 
-    }
+    };
 
     render(){ 
         return(
             <View style={styles.container}>
-               <Text>This is Account Screen</Text>
-
+                <UserInfor/>
                <TouchableHighlight style={[styles.buttonContainer, styles.logoutButton]} onPress={this._logoutAsync}>
                     <Text style={styles.logoutText}>Logout</Text>
                 </TouchableHighlight>
@@ -32,10 +32,8 @@ class Account extends React.Component{
  
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#DCDCDC',
     },
     inputContainer: {
         borderBottomColor: '#F5FCFF',
@@ -61,11 +59,11 @@ const styles = StyleSheet.create({
       justifyContent: 'center'
     },
     buttonContainer: {
-      height:45, 
+      height:45,
       marginTop:100,
       flexDirection: 'row',
       justifyContent: 'center',
-      alignItems: 'center', 
+      alignItems: 'center',
       width:250,
       borderRadius:30,
     },
