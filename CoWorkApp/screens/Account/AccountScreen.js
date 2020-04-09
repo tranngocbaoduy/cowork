@@ -17,9 +17,9 @@ export default class AccountScreen extends React.Component{
     };
 
     buildContent(){ 
-        let _content = [];
-        _content.push(<Account key='1'></Account>)
-        return _content
+        return (
+            <Account key='1'></Account>
+        );
     }
 
     render(){ 
