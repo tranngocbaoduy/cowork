@@ -1,6 +1,7 @@
 import React from 'react'
 import {View, Text, SectionList} from "react-native";
 import SearchResultItem from "./SearchResultItem";
+import SearchNoResult from "./SearchNoResult";
 
 const data = [{
     title: 'Board',
@@ -21,17 +22,18 @@ export default class SearchResultList extends React.Component {
     render() {
         return (
             <View style={{}}>
-                <SectionList
-                    ItemSeparatorComponent={({_}) => (
-                        <View style={{height: 1, backgroundColor: '#80808080'}} />
-                        )}
-                    keyExtractor={(item, index) => item + index}
-                    sections={data}
-                    renderItem={({item}) => <SearchResultItem item={item}/>}
-                    renderSectionHeader={({section: {title}}) => (
-                        <Text style={{padding: 8, backgroundColor: 'white'}}>{title}</Text>
-                    )}
-                />
+                <SearchNoResult/>
+                {/*<SectionList*/}
+                {/*    ItemSeparatorComponent={({_}) => (*/}
+                {/*        <View style={{height: 1, backgroundColor: '#80808080'}} />*/}
+                {/*        )}*/}
+                {/*    keyExtractor={(item, index) => item + index}*/}
+                {/*    sections={data}*/}
+                {/*    renderItem={({item}) => <SearchResultItem item={item}/>}*/}
+                {/*    renderSectionHeader={({section: {title}}) => (*/}
+                {/*        <Text style={{padding: 8, backgroundColor: 'white'}}>{title}</Text>*/}
+                {/*    )}*/}
+                {/*/>*/}
             </View>
         )
     }
