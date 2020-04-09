@@ -130,7 +130,7 @@ const check = createSwitchNavigator(
     Auth: AuthStack,
   },
   {
-    initialRouteName: 'AuthLoading',
+    initialRouteName: 'App',
   }
 );
 

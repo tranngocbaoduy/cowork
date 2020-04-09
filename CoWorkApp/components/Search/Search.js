@@ -1,32 +1,41 @@
 import React from 'react'
-import {Text, View, Image,StyleSheet} from 'react-native';
+import {Text, View, ScrollView, Image, StyleSheet} from 'react-native';
+import SearchBar from "./SearchBar";
+import SearchRecentList from "./SearchRecentList";
+import SearchResultList from "./SearchResutlList";
 
-export default class Search extends React.Component{
-    constructor(props){
-        super(props); 
+export default class Search extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            text: '',
+        };
     }
 
-    render(){ 
-        return(
+    render() {
+        const {text} = this.state;
+        return (
             <View style={styles.container}>
-                <Text>This is Search Screen</Text> 
+                <SearchBar onSearch={(keyword) => this.setState({text: keyword})}/>
+                {/* <ScrollView> */}
+                    {text === '' && <SearchRecentList/> || <SearchResultList/>}
+                {/* </ScrollView> */}
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    container:{
-        justifyContent:'center',
-        padding:8, 
-        backgroundColor:'#ffffff', 
-        shadowOpacity:0.3,
-        borderRadius:3, 
-        marginBottom:10, 
-        shadowOffset:{width:0,height:0}
+    container: {
+        justifyContent: 'center',
+        backgroundColor: '#ffffff',
+        // shadowOpacity:0.3,
+        borderRadius: 3,
+        marginBottom: 10,
+        shadowOffset: {width: 0, height: 0}
     },
-    text:{
-        margin:2,
-        fontWeight:"500", 
+    text: {
+        margin: 2,
+        fontWeight: "500",
     }
 });
