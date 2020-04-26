@@ -12,29 +12,32 @@ import LoginScreen from './screens/Authentication/LoginScreen'
 import SignUpScreen from './screens/Authentication/SignUpScreen'
 import AuthLoadingScreen from './screens/Authentication/AuthLoadingScreen'
 import CategoryScreen from './screens/Board/CategoryScreen'
- 
+import TaskScreen from './screens/Board/TaskScreen'
+import TaskDetailScreen from './screens/Board/TaskDetailScreen'
+import MiddleScreen from './screens/Board/MiddleScreen'
 import { themeConstants } from './redux/constant/theme.constant'
  
 import Ionicons from 'react-native-vector-icons/Ionicons';  
 import IconWithBadge from './helper/IconWithBadge'
 import { connect } from 'react-redux'
+import { store } from './redux/store'
 
-const setNavigationOptions = (title) => { 
-  const mode = themeConstants.DARK; 
-  if( mode === themeConstants.DARK){
-    return {
-      title: title,
-      backgroundColor: "#fff",
-      color: "#000"
-    }
-  }else{
-    return {
-      title: title,
-      backgroundColor: "#000",
-      color: "#fff"
-    }
-  }
+// backgroundColor: "#FFAA53", 
+// headerTintColor: "#fff", 
+
+const setNavigationOptions = (title) => {  
+ 
+  const { headerTintColor, backgroundColor} = store.getState().themeReducer;  
+  // console.log(headerTintColor, backgroundColor); 
+  return {
+    title: title,  
+    // headerStyle: {
+    //     backgroundColor: backgroundColor, 
+    // }, 
+    // headerTintColor: headerTintColor,
+  }  
 }
+
 
 const LoginStack = createStackNavigator({
   LoginScreen,
@@ -45,34 +48,74 @@ const LoginStack = createStackNavigator({
 }); 
  
 const HomeStack = createStackNavigator({
-  HomeScreen,
+  HomeScreen : {
+    screen: HomeScreen,
+    navigationOptions: setNavigationOptions("Home")
+  },
 },{
- navigationOptions: setNavigationOptions("Home")
+  navigationOptions: {
+    title: "Home"
+  }
 });
 
 const AccountStack = createStackNavigator({
-     AccountScreen,
-   },{
+  AccountScreen: {
+    screen: AccountScreen,
     navigationOptions: setNavigationOptions("Account")
+  }
+},{
+  navigationOptions: {
+    title: "Account"
+  }
 });
 
 const BoardStack = createStackNavigator({
-    BoardScreen,
-    CategoryScreen
-   },{
-    navigationOptions: setNavigationOptions("Board")
- });
+  BoardScreen:{
+    screen: BoardScreen,
+    // navigationOptions: setNavigationOptions("Board")
+  },
+  CategoryScreen:{
+    screen: CategoryScreen,
+    // navigationOptions: setNavigationOptions("Category")
+  }, 
+  TaskScreen:{
+    screen: TaskScreen,
+    // navigationOptions: setNavigationOptions("Category")
+  },
+  TaskDetailScreen:{
+    screen: TaskDetailScreen,
+    // navigationOptions: setNavigationOptions("Category")
+  },
+  MiddleScreen:{
+    screen: MiddleScreen,
+    // navigationOptions: setNavigationOptions("Category")
+  }
+},{
+  navigationOptions: {
+    title: "Board"
+  }
+});
 
 const SearchStack = createStackNavigator({
-  SearchScreen,
- },{ 
-  navigationOptions: setNavigationOptions("Search")
+  SearchScreen:{
+    screen: SearchScreen,
+    navigationOptions: setNavigationOptions("Search")
+  },
+},{
+  navigationOptions: {
+    title: "Search"
+  }
 });
 
 const NotificationStack = createStackNavigator({
-  NotificationScreen,
- },{
-  navigationOptions: setNavigationOptions("Notification")
+  NotificationScreen:{
+    screen: NotificationScreen,
+    navigationOptions: setNavigationOptions("Notification")
+  }
+},{
+  navigationOptions: {
+    title: "Notify"
+  }
 });
 
 const HomeIconWithBadge = props => {
@@ -87,14 +130,14 @@ const AppNavigator = createBottomTabNavigator(
     NotificationStack,
     AccountStack, 
   },
-  {
+  { 
     defaultNavigationOptions: ({navigation})=>({
       tabBarLabel: navigation.tabBarLabel, 
       // tabBarOptions: {
       //   activeTintColor: 'tomato',
       //   inactiveTintColor: 'gray',
       //   style:{
-      //     backgroundColor:"blue"
+      //     // backgroundColor:"blue"
       //   }
       // },
       tabBarOptions: setNavigationOptions("Home"),
@@ -120,7 +163,6 @@ const AppNavigator = createBottomTabNavigator(
     })
 });
 
-
 const AuthStack = createStackNavigator({ LoginStack, });
 
 const check = createSwitchNavigator(
@@ -130,8 +172,14 @@ const check = createSwitchNavigator(
     Auth: AuthStack,
   },
   {
-    initialRouteName: 'App',
+    initialRouteName: 'AuthLoading',
   }
-);
+); 
 
-export default connect(null)(AppNavigator);
+function mapStateToProps(store){
+  const { mode } = store.themeReducer;  
+  return {
+    mode
+  } 
+}
+export default connect(mapStateToProps)(AppNavigator);

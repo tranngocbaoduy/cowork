@@ -13,8 +13,7 @@ export default class TextSearch extends React.Component{
     clickSearch(key) {
         alert('abc' + key);
         this.state  = {}
-        const { ti, text } = this.props;
-        console.log(ti, text)
+        const { ti, text } = this.props; 
     } 
 
     render(){ 

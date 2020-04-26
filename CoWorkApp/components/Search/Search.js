@@ -9,17 +9,23 @@ export default class Search extends React.Component {
         super(props);
         this.state = {
             text: '',
+            closeSearch: true,
         };
     }
 
+    _closeSearch = () => { 
+        this.setState({ 
+            closeSearch: true,
+            text: '' 
+        });
+    }
+
     render() {
-        const {text} = this.state;
+        const {text, closeSearch} = this.state;
         return (
             <View style={styles.container}>
-                <SearchBar onSearch={(keyword) => this.setState({text: keyword})}/>
-                {/* <ScrollView> */}
-                    {text === '' && <SearchRecentList/> || <SearchResultList/>}
-                {/* </ScrollView> */}
+                <SearchBar  onSearch={(keyword) => this.setState({text: keyword, closeSearch:false})} closeSearch={closeSearch} handleCloseSearch={this._closeSearch}/> 
+                { !closeSearch && (text === '' && <SearchRecentList style={styles.searchContainer} /> || <SearchResultList style={styles.searchContainer}/>) }
             </View>
         );
     }
@@ -31,11 +37,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
         // shadowOpacity:0.3,
         borderRadius: 3,
-        marginBottom: 10,
-        shadowOffset: {width: 0, height: 0}
+        // position: 'absolute',
+        // zIndex:1,
+        right:0,
+        left:0, 
+        shadowOffset: {width: 0, height: 0}, 
+    },
+    searchContainer:{ 
+        zIndex: 2,
+        position: 'absolute',
     },
     text: {
         margin: 2,
         fontWeight: "500",
     }
 });
+

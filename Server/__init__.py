@@ -27,8 +27,16 @@ def create_app(class_config=Config):
 
     from Server.Vocabulary.routes import vocab
     from Server.User.routes import userBP
+    from Server.Board.routes import boardBP
+    from Server.Category.routes import categoryBP
+    from Server.Task.routes import taskBP
+    from Server.Notification.routes import notificationBP
 
     app.register_blueprint(vocab)  
     app.register_blueprint(userBP)   
+    app.register_blueprint(boardBP)   
+    app.register_blueprint(categoryBP)   
+    app.register_blueprint(taskBP)   
+    app.register_blueprint(notificationBP)   
  
-    return app
+    return app 

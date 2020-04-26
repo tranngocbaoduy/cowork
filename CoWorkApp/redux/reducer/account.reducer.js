@@ -2,7 +2,31 @@ import { accountConstants } from '../constant/account.constant';
 import { AsyncStorage } from 'react-native';
 
 let userToken = AsyncStorage.getItem('userToken');
-const initalState = userToken ? { loggedIn: false } : { loggedIn: true, userToken }
+const initalState = userToken ? { loggedIn: false, friend } : { loggedIn: true, userToken,friend:friend }
+
+const friend = [
+    {
+        id:"01",
+        name:'Alaska',
+        email:'alaska@example.com'
+    },
+    {
+        id:"02",
+        name:'Hikari',
+        email:'hikari@example.com'
+    },
+    {
+        id:"03",
+        name:'Valdimir',
+        email:'vald@example.com'
+    },
+    {
+        id:"04",
+        name:'Axe',
+        email:'axe@example.com'
+    }
+
+]
 
 export function accountReducer(state = initalState, action) {  
     switch (action.type) {

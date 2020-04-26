@@ -9,7 +9,7 @@ class Config:
     DROPZONE_MAX_FILE_SIZE = 8
     UPLOADED_PHOTOS_DEST = os.getcwd() + '/static/input'
 
-    MONGODB_DB = urllib.parse.quote_plus("cowork")
+    MONGODB_DB = urllib.parse.quote_plus("co_work")
     MONGODB_USERNAME = urllib.parse.quote_plus('tamaki')
     MONGODB_PASSWORD = urllib.parse.quote_plus('mushroomzz99')
 

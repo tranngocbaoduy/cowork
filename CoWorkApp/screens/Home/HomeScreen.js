@@ -1,18 +1,20 @@
 import React from 'react';
 import { StyleSheet, View , Text, InteractionManager} from 'react-native';
-import Home from '../../components/Home/Home' 
-
+import Home from '../../components/Home/Home'  
+import { wait } from '../../helper/wait'
 import { connect } from 'react-redux'  
 
 class HomeScreen extends React.Component{
  
     constructor(props){
         super(props);
-        this.state = { 
+        this.state = {
+            backgroundColorState: '',
         }
+        this.checkMode = this.checkMode.bind(this); 
     }
 
-    static navigationOptions = ({navigation}) => { 
+    static navigationOptions = ({navigation}) => {  
         return {
             title: navigation.getParam('Title', 'Home'), 
             headerStyle: {
@@ -27,9 +29,29 @@ class HomeScreen extends React.Component{
         const { loggedIn } = this.props; 
         _content.push(<Home key='1'></Home>) 
         return _content
+    } 
+
+    checkMode(){ 
+        wait(100).then(() => { 
+            this.setState({backgroundColor:this.props.backgroundColor});
+            const { headerTintColor, backgroundColor, navigationName } = this.props;  
+            this.props.navigation.setParams({
+                Title: 'Board',
+                BackgroundColor: backgroundColor,
+                HeaderTintColor: headerTintColor,
+            }); 
+        }) 
+    }  
+ 
+    componentDidMount(){
+        const { backgroundColorState } = this.state; 
+        const { backgroundColor } = this.props; 
+        if( backgroundColorState != backgroundColor){
+            this.checkMode();
+        }  
     }
 
-    render(){ 
+    render(){  
         return (
             <View style={styles.container}>
                 {this.buildContent()} 
@@ -44,9 +66,9 @@ const styles = {
 }
 
 function mapStateToProps(store) {
-    const { loggedIn } = store.accountReducer;     
+    const { headerTintColor, backgroundColor, loading} = store.themeReducer;     
     return { 
-        loggedIn,
+        headerTintColor, backgroundColor, loading
     };
 } 
 

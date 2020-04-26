@@ -14,13 +14,14 @@ export default class SearchResultItem extends React.Component {
                 padding: 8,
                 flexDirection: 'row',
                 height: 70,
-                alignItems: 'center'
+                alignItems: 'center', 
+                borderRadius:12
             }}>
                 <View>
                     <Image style={styles.images} source={require('../../assets/1779.jpg')}
                     />
                 </View>
-                <View style={{flexDirection: 'col', marginLeft: 10}}>
+                <View style={{flexDirection: 'column', marginLeft: 10}}>
                     <Text style={{marginLeft: 2, fontWeight: 'bold'}}>{title}</Text>
                     <Text style={{marginLeft: 2, color: '#00000080', fontSize: 10, marginVertical: 3}}>{date}</Text>
                     <Text style={{marginLeft: 2}}>{memberCount} members in group</Text>

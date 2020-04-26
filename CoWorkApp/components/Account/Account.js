@@ -22,8 +22,7 @@ class Account extends React.Component{
 
                <TouchableHighlight style={[styles.buttonContainer, styles.logoutButton]} onPress={this._logoutAsync}>
                     <Text style={styles.logoutText}>Logout</Text>
-                </TouchableHighlight>
-
+                </TouchableHighlight> 
             </View>
         );
     }

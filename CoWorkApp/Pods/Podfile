@@ -1,0 +1,8 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+target 'CoWork' do
+    pod 'AppCenter/Analytics', '~> 1.14.0'
+    pod 'AppCenter/Crashes', '~> 1.14.0'
+    pod 'AppCenter/Push', '~> 1.14.0'
+    pod 'AppCenterReactNativeShared', '~> 1.13.0'
+end

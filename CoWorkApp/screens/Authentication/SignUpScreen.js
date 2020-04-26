@@ -2,7 +2,8 @@ import React from 'react';
 import { StyleSheet,ImageBackground, View} from 'react-native';
 import SignUp from '../../components/Authentication/SignUp' 
 
-import connect from 'react-redux'
+import { wait } from '../../helper/wait'
+import {connect} from 'react-redux'
 
 class SignUpScreen extends React.Component{
  
@@ -17,6 +18,33 @@ class SignUpScreen extends React.Component{
         };
     }; 
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            backgroundColorState: '',
+        }
+    }
+
+    checkMode(){ 
+        wait(100).then(() => {
+            this.setState({backgroundColor:this.props.backgroundColor});
+            const { headerTintColor, backgroundColor, navigationName } = this.props;  
+            this.props.navigation.setParams({
+                Title: 'Board',
+                BackgroundColor: backgroundColor,
+                HeaderTintColor: headerTintColor,
+            }); 
+        }); 
+    }    
+
+    componentDidMount(){
+        const { backgroundColorState } = this.state; 
+        const { backgroundColor } = this.props; 
+        if( backgroundColorState != backgroundColor){
+            this.checkMode();
+        }  
+    }
+
     buildContent(){ 
         let _content = [];
         const { navigation } = this.props;
@@ -24,7 +52,11 @@ class SignUpScreen extends React.Component{
         return _content
     }
 
-    render(){  
+    render(){   
+        const { backgroundColor } = this.state; 
+        if(backgroundColor != this.props.backgroundColor){
+            this.checkMode();
+        } 
         let image = require('../../assets/bg.jpeg')
         return (
             <View style={styles.container}>
@@ -46,4 +78,12 @@ const styles = StyleSheet.create({
     }
 })
 
-export default (SignUpScreen);
+
+function mapStateToProps(store) {
+    const { backgroundColor, headerTintColor,loading } = store.themeReducer;
+    return {
+        backgroundColor, headerTintColor, loading
+    }
+}
+ 
+export default connect(mapStateToProps)(SignUpScreen); 
