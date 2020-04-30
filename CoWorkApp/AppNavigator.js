@@ -27,8 +27,7 @@ import { store } from './redux/store'
 
 const setNavigationOptions = (title) => {  
  
-  const { headerTintColor, backgroundColor} = store.getState().themeReducer;  
-  // console.log(headerTintColor, backgroundColor); 
+  const { headerTintColor, backgroundColor} = store.getState().themeReducer;   
   return {
     title: title,  
     // headerStyle: {
@@ -182,4 +181,4 @@ function mapStateToProps(store){
     mode
   } 
 }
-export default connect(mapStateToProps)(AppNavigator);
+export default connect(mapStateToProps)(check);

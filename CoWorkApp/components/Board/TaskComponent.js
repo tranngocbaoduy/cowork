@@ -23,12 +23,23 @@ class TaskComponent extends React.PureComponent{
 
     render(){   
         const{ headerTintColor, backgroundColor, data} = this.props;  
-        console.log("Task Component"); 
-        let dateTime = new Date(data.created_date['$date']).toDateString();   
-        let url = DOMAIN.split('api/')[0] + data.images[0]; 
+        console.log("Task Component");  
+        let dateTime = null;
+        let url = ""
+        if (data) { 
+            dateTime = new Date(data.created_date['$date']).toDateString();   
+            url = DOMAIN.split('api/')[0] + data.images[0]; 
+        }
         return(
             
             <TouchableHighlight 
+                onLongPress={() =>
+                NavigationService.navigate('MiddleScreen', {
+                    navigationName:'Update Task', 
+                    data:data,  
+                    typeCreate: 5,
+                    backgroundColor:backgroundColor, 
+                    headerTintColor: headerTintColor,  })}
                 activeOpacity={0.6} 
                 underlayColor="#DDDDDD"
                 onPress={(index) =>   

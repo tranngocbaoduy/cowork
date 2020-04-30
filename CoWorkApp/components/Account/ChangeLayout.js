@@ -45,20 +45,22 @@ class ChangeLayout extends React.PureComponent{
  
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-    //   alignItems: 'center',
-      backgroundColor: '#DCDCDC',
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-around',  
+    //   alignItems: 'center', 
     }, 
-    square:{
-        borderColor: 'blue',
+    square: {
+        margin:3,
+        borderColor: '#000',
         width: 100, 
         height: 50,
         padding:10,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor:'black'
+        backgroundColor: '#DCDCDC', 
+        borderWidth: 0.3,
+        borderRadius: 4,
     },
     styleBGI: {
         backgroundColor: '#fff', 

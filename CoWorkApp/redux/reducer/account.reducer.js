@@ -38,6 +38,7 @@ export function accountReducer(state = initalState, action) {
         case accountConstants.LOGIN_SUCCESS:
             return {
                 ...state, 
+                user: action.data,
                 token: action.token, 
                 loading: false
             }  

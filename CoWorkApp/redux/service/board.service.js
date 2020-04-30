@@ -6,12 +6,12 @@ import convertFile from '../../helper/convertImage2Base64'
 export const boardService = { 
     getAll,
     create,
-    // errors, 
+    update,
+    remove,
+    searchAll,
     // getPerPage,
     // getById, 
-};
- 
-
+}; 
 
 function errors(){
     return {
@@ -42,6 +42,47 @@ async function create(info){
         headers: { 'Content-Type': 'application/json' }
     }; 
     return await axios.post(DOMAIN + 'board/create',JSON.stringify({info}), requestOptions)
+            .then(handleResponse)
+            .then(data => {   
+                return data;
+            });
+} 
+
+async function update(info){   
+    let images = []; 
+    for (let uri of info.listImage){ 
+        images.push(await convertFile(uri));
+    } 
+    info['images'] = images; 
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    }; 
+    return await axios.post(DOMAIN + 'board/update',JSON.stringify({info}), requestOptions)
+        .then(handleResponse)
+        .then(data => {  
+            return data;
+        });
+} 
+
+async function remove(info){    
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    }; 
+    return await axios.post(DOMAIN + 'board/remove',JSON.stringify({info}), requestOptions)
+        .then(handleResponse)
+        .then(data => {  
+            return data;
+        });
+} 
+ 
+async function searchAll(info){   
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    }; 
+    return await axios.post(DOMAIN + 'board/search_all',JSON.stringify({info}), requestOptions)
             .then(handleResponse)
             .then(data => {  
                 return data;

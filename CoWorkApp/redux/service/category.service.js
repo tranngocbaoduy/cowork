@@ -5,7 +5,8 @@ import { DOMAIN } from './'
 export const categoryService = { 
     getByIds,
     create,
-    // errors, 
+    update,
+    remove,
     // getPerPage,
     // getById, 
 };
@@ -43,6 +44,35 @@ async function create(info){
             .then(data => {  
                 return data;
             });
+} 
+
+async function update(info){   
+    let images = [];
+    for (let uri of info.listImage){ 
+        images.push(await convertFile(uri));
+    }
+    info['images'] = images; 
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    }; 
+    return await axios.post(DOMAIN + 'category/update',JSON.stringify({info}), requestOptions)
+            .then(handleResponse)
+            .then(data => {  
+                return data;
+            });
+} 
+
+async function remove(info){    
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    }; 
+    return await axios.post(DOMAIN + 'category/remove',JSON.stringify({info}), requestOptions)
+        .then(handleResponse)
+        .then(data => {  
+            return data;
+        });
 } 
 
 function handleResponse(response) {

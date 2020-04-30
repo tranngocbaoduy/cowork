@@ -1,8 +1,12 @@
 import React from 'react'
-import { StyleSheet, Text, View, TextInput, Button, AsyncStorage, TouchableHighlight, ImageBackground, Alert} from 'react-native';
+import { StyleSheet, Text, View,Vibration, TextInput, Button, AsyncStorage, TouchableHighlight, ImageBackground, Alert} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';  
 import { accountAction } from '../../redux/action/account.action'
  
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
+import Constants from 'expo-constants';
+
 import { isEmpty } from '../../helper/String'
 import { connect } from 'react-redux'
 class Login extends React.PureComponent{
@@ -25,6 +29,7 @@ class Login extends React.PureComponent{
             errorLogin: false,
             errorUser: false,
             errorPassword: false,
+            expoPushToken: null,
         }
     }
 
@@ -54,11 +59,84 @@ class Login extends React.PureComponent{
             });
         }
         
-        if(!isEmpty(username) && !isEmpty(password)){
-            const info = { username, password}; 
+        if(!isEmpty(username) && !isEmpty(password)){ 
+            const { expoPushToken } = this.state;
+            const info = { username, password, expoPushToken };
             dispatch(accountAction.login(info)); 
         }  
     };
+
+    _handleNotification = notification => {
+        Vibration.vibrate();
+        console.log(notification);
+        this.setState({ notification: notification });
+    };
+ 
+    registerForPushNotificationsAsync = async () => {
+        if (Constants.isDevice) {
+            const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+                const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+                finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+                alert('Failed to get push token for push notification!');
+                return;
+            }
+            let token = await Notifications.getExpoPushTokenAsync();   
+            this.setState({ expoPushToken: token }); 
+        } else {
+            alert('Must use physical device for Push Notifications');
+        }
+  
+        if (Platform.OS === 'android') {
+            Notifications.createChannelAndroidAsync('default', {
+                name: 'default',
+                sound: true,
+                priority: 'max',
+                vibrate: [0, 250, 250, 250],
+            });
+        }
+    };
+
+
+    componentDidMount() {
+        this.registerForPushNotificationsAsync(); 
+        // Handle notifications that are received or selected while the app
+        // is open. If the app was closed and then opened by tapping the
+        // notification (rather than just tapping the app icon to open it),
+        // this function will fire on the next tick after the app starts
+        // with the notification data.
+        this._notificationSubscription = Notifications.addListener(this._handleNotification);
+    }
+
+    // sendPushNotification = async () => {
+    //     this.setState({show:false});  
+    //     const { expoPushToken } = this.state;
+    //     if (!expoPushToken ){
+    //         this.registerForPushNotificationsAsync();
+    //     } else { 
+    //         await this.sendData(expoPushToken);
+    //         const message = {
+    //             to: expoPushToken,
+    //             sound: 'default',
+    //             title: 'Original Title',
+    //             body: 'And here is the body!',
+    //             data: { data: 'goes here' },
+    //             _displayInForeground: true,
+    //         };
+    //         const response = await fetch('https://exp.host/--/api/v2/push/send', {
+    //             method: 'POST',
+    //             headers: {
+    //                 Accept: 'application/json',
+    //                 'Accept-encoding': 'gzip, deflate',
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(message),
+    //         });
+    //     } 
+    // };
 
     render(){   
         const { messageUserName, messagePassword, messageLogin , errorUser, errorPassword, errorLogin} = this.state;

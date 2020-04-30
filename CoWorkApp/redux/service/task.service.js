@@ -5,6 +5,8 @@ import { DOMAIN } from './'
 export const taskService = { 
     getByIds,
     create,
+    update,
+    remove,
     // errors, 
     // getPerPage,
     // getById, 
@@ -40,6 +42,37 @@ async function create(info){
         headers: { 'Content-Type': 'application/json' }
     }; 
     return await axios.post(DOMAIN + 'task/create',JSON.stringify({info}), requestOptions)
+            .then(handleResponse)
+            .then(data => {  
+                return data;
+            });
+} 
+
+
+async function update(info){   
+    let images = [];
+    for (let uri of info.listImage){ 
+        images.push(await convertFile(uri));
+    } 
+    info['images'] = images; 
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    }; 
+    return await axios.post(DOMAIN + 'task/update',JSON.stringify({info}), requestOptions)
+            .then(handleResponse)
+            .then(data => {  
+                return data;
+            });
+} 
+
+
+async function remove(info){   
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    }; 
+    return await axios.post(DOMAIN + 'task/remove',JSON.stringify({info}), requestOptions)
             .then(handleResponse)
             .then(data => {  
                 return data;

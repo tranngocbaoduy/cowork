@@ -6,6 +6,7 @@ import base64
 from PIL import Image
 from flask import current_app,url_for 
 from io import BytesIO
+from Server.model import User, Board, Task, Category, Notification
 
 def CreateRespone():
     answer={
@@ -63,3 +64,15 @@ def convert_and_save(b64_string, component):
   
 def convert_img_tob64(path): 
     imgdata = base64.b64decode(img) 
+ 
+
+def send_notification(token, message, user, id_board, id_category, id_task, activity, obj, name, image): 
+    try: 
+        noti = Notification(token=str(token), message=str(message), user=str(user), id_board=str(id_board), id_category=str(id_category), 
+            id_task=str(id_task), activity=str(activity), obj=str(obj), name=str(name), image=str(image)).save()
+        user = User.objects(username=user).first() 
+        user.list_notifications.append(noti) 
+        user.save() 
+    except:
+        print("Can't save notification")
+

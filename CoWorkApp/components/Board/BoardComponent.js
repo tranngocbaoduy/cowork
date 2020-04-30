@@ -18,11 +18,24 @@ class BoardComponent extends React.PureComponent{
 
 
     render(){   
-        const{ headerTintColor, backgroundColor, data, onChoose } = this.props;   
-        let dateTime = new Date(data.created_date['$date']).toDateString();   
-        let url = DOMAIN.split('api/')[0] + data.images[0]; 
+        const { headerTintColor, backgroundColor, data, onChoose, dataFriend } = this.props;
+        let dateTime = null;
+        let url = ""
+        if (data) { 
+            dateTime = new Date(data.created_date['$date']).toDateString();   
+            url = DOMAIN.split('api/')[0] + data.images[0]; 
+        }
         return( 
             <TouchableHighlight 
+                onLongPress={() =>
+                    NavigationService.navigate('MiddleScreen', {
+                        navigationName:'Update Board', 
+                        data:data, 
+                        nameBoard: data.name,
+                        dataFriend:dataFriend,
+                        typeCreate: 3,
+                        backgroundColor:backgroundColor, 
+                        headerTintColor: headerTintColor,  })}
                 activeOpacity={0.6} 
                 underlayColor="#DDDDDD"
                 onPress={(index) =>  
@@ -30,6 +43,7 @@ class BoardComponent extends React.PureComponent{
                         NavigationService.navigate('CategoryScreen', {
                             navigationName:'Category', 
                             data:data.list_category, 
+                            refresh:true,
                             nameBoard: data.name,
                             backgroundColor:backgroundColor, 
                             headerTintColor: headerTintColor,  

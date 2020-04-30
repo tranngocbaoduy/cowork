@@ -1,19 +1,24 @@
 import React from 'react'
 import {Text, View, StyleSheet,FlatList } from 'react-native' 
 import CategoryComponent from './CategoryComponent'
-
-export default class Category extends React.Component{
+import { connect } from 'react-redux'
+    
+class Category extends React.Component{
 
     constructor(props){
         super(props); 
     }
 
     buildContent = () => {
-        const { data } = this.props; 
+        const { data, resultSearch } = this.props; 
         let _content = [];  
         if (data){
             if(data.length == 0){
-                _content.push(<Text key="1">No category. Create a new one !!!</Text>)
+                if (resultSearch) {
+                    _content.push(<Text key="1">{resultSearch}</Text>)
+                } else { 
+                    _content.push(<Text key="1">No category. Create a new one !!!</Text>)
+                } 
             } else {
                 for (let index in data){
                     _content.push(<CategoryComponent
@@ -80,3 +85,11 @@ const styles = StyleSheet.create({
         justifyContent:'flex-start', 
     }
 });
+
+function mapStateToProps(store) {
+    const { category } = store.categoryReducer;
+    return {
+        category
+    } 
+}
+export default connect()(Category);

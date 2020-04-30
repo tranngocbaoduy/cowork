@@ -9,16 +9,21 @@ export default class Board extends React.Component{
     }
 
     buildContent(){
-        const { data, onChoose } = this.props;
+        const { data, onChoose, dataFriend, resultSearch } = this.props;
         let _content = [];  
         if (data){
-            if(data.length == 0){
-                _content.push(<Text key="1">No board. Create a new one !!!</Text>)
+            if (data.length == 0) {
+                if (resultSearch) {
+                    _content.push(<Text key="1">{resultSearch}</Text>)
+                } else { 
+                    _content.push(<Text key="1">No board. Create a new one !!!</Text>)
+                } 
             } else {
                 for (let index in data){ 
                     _content.push(<BoardComponent
                         key={index} 
                         onChoose={onChoose}
+                        dataFriend={dataFriend}
                         data={data[index]} ></BoardComponent>)
                 } 
             }

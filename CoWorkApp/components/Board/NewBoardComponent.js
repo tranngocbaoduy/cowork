@@ -1,6 +1,6 @@
 import React from 'react'
 import {Text, View, StyleSheet,TouchableHighlight, 
-    Image, ImageStore, ImageEditor, TextInput, TouchableOpacity, Button} from 'react-native' 
+    Image, Alert, ActivityIndicator, TextInput, TouchableOpacity, Button} from 'react-native' 
 import { connect } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';  
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -28,7 +28,8 @@ class NewBoardComponent extends React.PureComponent{
             content: '',
             dataFriendChecked: [],
             showDatePickerCreateTime: false, 
-            listImage:[],
+            listImage: [],
+            creating: false,
         }
         this.buildContent = this.buildContent.bind(this);
     }
@@ -59,7 +60,9 @@ class NewBoardComponent extends React.PureComponent{
             }
             dispatch(boardAction.create(info));
         }
-
+        this.setState({
+            creating: true,
+        });
         console.log(nameBoard, content, codeBoard, createTime, dataFriendChecked, listImage);
     }
 
@@ -83,12 +86,18 @@ class NewBoardComponent extends React.PureComponent{
     render(){ 
         const { title, dataFriend, backgroundColor, headerTintColor } = this.props;
         console.log("Create New Board")
-        const { loaded, showDatePickerCreateTime} = this.state;
+        const { loaded, showDatePickerCreateTime, creating} = this.state;
         const Icon = ({ name }) => (
             <Ionicons style={styles.inputIcon} size={25}
               name={`${Platform.OS === "ios" ? "ios" : "md"}-${name}`}
             />
         )    
+        if (creating) {
+            return (
+            <View style={[styles.containerLoading, styles.horizontal]}>
+                <ActivityIndicator size="large" color={backgroundColor}/>
+            </View>)
+        }
         return(
             <View style={styles.container}>  
                 <View style={styles.inputContainer}>  
@@ -124,7 +133,7 @@ class NewBoardComponent extends React.PureComponent{
                 <View style={styles.inputContainer}> 
                     <Icon name="alarm"/>
                     <TouchableOpacity style={{flex:1,}}
-                                    onPress={() => this.setState({showDatePickerCreateTime: !showDatePickerCreateTime})}>  
+                                    onPress={() =>  Alert.alert("Can't modify this flied")}>  
                         <Text style={styles.inputs}
                             placeholder="Create Time" 
                             underlineColorAndroid='transparent'              
@@ -156,6 +165,11 @@ const styles = StyleSheet.create({
         flexDirection:'column',
         justifyContent:'flex-start',  
     },
+    containerLoading: {
+        backgroundColor:"#fff", 
+        flex:1,
+        paddingVertical:4,
+    }, 
     inputs:{ 
         marginLeft:16, 
         borderBottomColor: '#FFFFFF', 
@@ -228,6 +242,11 @@ const styles = StyleSheet.create({
         marginBottom:20,
         width:250,
         borderRadius:30,  
+    }, 
+    horizontal: {
+        flexDirection: "row",
+        justifyContent: "space-around",
+        padding: 10
     },
 });
 

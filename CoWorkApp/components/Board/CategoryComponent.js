@@ -27,10 +27,17 @@ class CategoryComponent extends React.Component{
 
     render(){   
         const{ headerTintColor, backgroundColor, data} = this.props;  
-        console.log("CategoryComponent");   
+        console.log("CategoryComponent");    
         let url = DOMAIN.split('api/')[0] + data.images[0]; 
         return( 
             <TouchableHighlight 
+                onLongPress={() =>
+                    NavigationService.navigate('MiddleScreen', {
+                        navigationName:'Update Category', 
+                        data:data,   
+                        typeCreate: 4,
+                        backgroundColor:backgroundColor, 
+                        headerTintColor: headerTintColor,  })}
                 activeOpacity={0.6} 
                 underlayColor="#DDDDDD"
                 onPress={ async (index) =>    
@@ -38,7 +45,8 @@ class CategoryComponent extends React.Component{
                         await AsyncStorage.setItem('selectedCategory', JSON.stringify(data)); 
                         NavigationService.navigate('TaskScreen', {
                             navigationName:'Task', 
-                            data:data.list_task, 
+                            data: data.list_task, 
+                            refresh:true,
                             nameCategory:data.name, 
                             backgroundColor:backgroundColor, 
                             headerTintColor: headerTintColor,  

@@ -18,6 +18,7 @@ class NewTaskComponent extends React.PureComponent{
     constructor(props){
         super(props); 
         this.state = {
+            creating: false,
             loaded: false,
             startTime: new Date(), 
             finishTime: new Date(), 
@@ -67,11 +68,14 @@ class NewTaskComponent extends React.PureComponent{
                 listTag: listTag,
             }
             dispatch(taskAction.create(info));
+            this.setState({
+                creating:true,
+            })
         }else{
             Alert.alert("You need fill all input field");
         }
-        console.log(selectedBoard['_id']['$oid'], nameBoard,  selectedCategory['_id']['$oid'], 
-        nameCategory, content, codeBoard , startTime, finishTime,  dataFriendChecked, listImage, listTag );
+        // console.log(selectedBoard['_id']['$oid'], nameBoard,  selectedCategory['_id']['$oid'], 
+        // nameCategory, content, codeBoard , startTime, finishTime,  dataFriendChecked, listImage, listTag );
     }
  
     getBoard = async () => {
@@ -117,7 +121,7 @@ class NewTaskComponent extends React.PureComponent{
     render(){ 
         const { title, dataFriend, backgroundColor, headerTintColor } = this.props;
         console.log("Create New Task")
-        const { nameTask, nameBoard, nameCategory, codeBoard, showDatePickerFinishTime, showDatePickerStartTime, selectedBoard, selectedCategory} = this.state;
+        const { creating, nameBoard, nameCategory, codeBoard, showDatePickerFinishTime, showDatePickerStartTime, selectedBoard, selectedCategory} = this.state;
         const Icon = ({ name }) => (
             <Ionicons style={styles.inputIcon} size={25}
               name={`${Platform.OS === "ios" ? "ios" : "md"}-${name}`}
@@ -144,6 +148,11 @@ class NewTaskComponent extends React.PureComponent{
                     <ActivityIndicator size="large" color={backgroundColor}  />
                 </View>
             )
+        }else if (creating) {
+            return (
+            <View style={[styles.containerLoading, styles.horizontal]}>
+                <ActivityIndicator size="large" color={backgroundColor}/>
+            </View>)
         } else {
 
             return(

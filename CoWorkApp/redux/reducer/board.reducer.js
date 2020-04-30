@@ -94,8 +94,9 @@ export function boardReducer(state = initalState, action) {
                 loading: true,
             }  
         case boardConstants.GET_BOARD_SUCCESS: 
-            return {
-                ...state, 
+            return {  
+                ...state,
+                loadAgain: false,
                 friend:friend,
                 data: initalState.data,
                 board: action.data,
@@ -113,8 +114,7 @@ export function boardReducer(state = initalState, action) {
                 loading: true,
             }  
         case boardConstants.CREATE_BOARD_SUCCESS: 
-            return { 
-                ...state,
+            return {  
                 board: null, 
             }   
         case boardConstants.CREATE_BOARD_FAILED: 
@@ -122,6 +122,54 @@ export function boardReducer(state = initalState, action) {
                 error: action.error,
                 failed: true,
             }        
+        
+        
+        case boardConstants.UPDATE_BOARD_REQUEST: 
+            return {   
+                loading: true,
+            }  
+        case boardConstants.UPDATE_BOARD_SUCCESS: 
+            return {  
+                loadAgain:true,
+                board: null, 
+            }   
+        case boardConstants.UPDATE_BOARD_FAILED: 
+            return {
+                error: action.error,
+                failed: true,
+            }        
+        
+        
+        case boardConstants.DELETE_BOARD_REQUEST: 
+            return {   
+                loading: true,
+            }  
+        case boardConstants.DELETE_BOARD_SUCCESS: 
+            return {   
+                loadAgain:true,
+            }   
+        case boardConstants.DELETE_BOARD_FAILED: 
+            return {
+                error: action.error,
+                failed: true,
+            }     
+        
+        case boardConstants.SEARCH_REQUEST: 
+            return {   
+                searchData: [],
+                loading: true,
+            }  
+        case boardConstants.SEARCH_SUCCESS: 
+            return {   
+                ...state,
+                searchData: action.data,
+                loadAgain:true,
+            }   
+        case boardConstants.SEARCH_FAILED: 
+            return {
+                error: action.error,
+                failed: true,
+            }     
         default:
             return state;
     }

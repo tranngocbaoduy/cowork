@@ -27,7 +27,8 @@ class NewCategoryComponent extends React.PureComponent{
             content: '',
             dataFriendChecked: [],
             showDatePickerCreateTime: false, 
-            listImage:[],
+            listImage: [],
+            creating: false,
         }
         this.buildContent = this.buildContent.bind(this);
     }
@@ -55,6 +56,9 @@ class NewCategoryComponent extends React.PureComponent{
         }else{
             Alert.alert("You need fill all input field");
         }
+        this.setState({
+            creating:true,
+        })
 
         console.log(nameBoard, nameCategory, content, codeBoard, createTime, dataFriendChecked, listImage);
     }
@@ -66,7 +70,7 @@ class NewCategoryComponent extends React.PureComponent{
             codeBoard: selectedBoard['id_board'],
             nameBoard: selectedBoard['name'],
         });
-    }
+    } 
 
     componentDidMount(){
         this.getBoard();
@@ -102,12 +106,19 @@ class NewCategoryComponent extends React.PureComponent{
     render(){ 
         const { title, dataFriend, backgroundColor, headerTintColor } = this.props;
         console.log("Create New Board")
-        const { loaded, showDatePickerCreateTime, selectedBoard, nameBoard, codeBoard} = this.state;
+        const { loaded, showDatePickerCreateTime, selectedBoard, nameBoard, codeBoard, creating} = this.state;
         const Icon = ({ name }) => (
             <Ionicons style={styles.inputIcon} size={25}
               name={`${Platform.OS === "ios" ? "ios" : "md"}-${name}`}
             />
         )    
+        if (creating) {
+            return (
+                <View key={1} style={[styles.containerLoading, styles.horizontal]}>
+                    <ActivityIndicator size="large" color={backgroundColor}  />
+                </View>
+            )
+        }
         if (!selectedBoard){
             this.getBoard();
             return(
@@ -166,15 +177,14 @@ class NewCategoryComponent extends React.PureComponent{
                     <View style={styles.inputContainer}> 
                         <Icon name="alarm"/>
                         <TouchableOpacity style={{flex:1,}}
-                                        onPress={() => this.setState({showDatePickerCreateTime: !showDatePickerCreateTime})}>  
+                                        onPress={() => Alert.alert("Can't modify this flied")}>  
                             <Text style={styles.inputs}
                                 placeholder="Create Time" 
                                 underlineColorAndroid='transparent'              
                             >{moment(this.state.createTime).format('MMMM Do YYYY, h:mm:ss a')}</Text>   
                             <DateTimePickerModal
                                 isVisible={showDatePickerCreateTime}
-                                mode="datetime"
-                                onConfirm={this.onChangeCreateTime}
+                                mode="datetime" 
                                 onCancel={() =>  this.setState({showDatePickerCreateTime: !showDatePickerCreateTime})}
                             /> 
                         </TouchableOpacity>  

@@ -2,7 +2,8 @@ import React from 'react';
 import { StyleSheet, View , Text, InteractionManager} from 'react-native';
 import Home from '../../components/Home/Home'  
 import { wait } from '../../helper/wait'
-import { connect } from 'react-redux'  
+import { connect } from 'react-redux'   
+import { boardAction } from '../../redux/action/board.action';
 
 class HomeScreen extends React.Component{
  
@@ -24,7 +25,11 @@ class HomeScreen extends React.Component{
         };
     };
 
-    buildContent(){ 
+    buildContent() { 
+        const { board  } = this.props;
+        if (!board) {
+            this.loadData()
+        }
         let _content = [];
         const { loggedIn } = this.props; 
         _content.push(<Home key='1'></Home>) 
@@ -42,13 +47,21 @@ class HomeScreen extends React.Component{
             }); 
         }) 
     }  
- 
+    
+    loadData = () => { 
+        const { dispatch, user } = this.props;   
+        console.log(user)
+        if (user) {
+            dispatch(boardAction.getAll({"username":user.username}));   
+        } 
+    }
+
     componentDidMount(){
         const { backgroundColorState } = this.state; 
-        const { backgroundColor } = this.props; 
+        const { backgroundColor, board } = this.props; 
         if( backgroundColorState != backgroundColor){
             this.checkMode();
-        }  
+        }   
     }
 
     render(){  
@@ -66,9 +79,11 @@ const styles = {
 }
 
 function mapStateToProps(store) {
-    const { headerTintColor, backgroundColor, loading} = store.themeReducer;     
+    const { headerTintColor, backgroundColor, loading } = store.themeReducer;   
+    const { user } = store.accountReducer;   
+    const { board } = store.boardReducer;   
     return { 
-        headerTintColor, backgroundColor, loading
+        headerTintColor, backgroundColor, loading, user, board
     };
 } 
 

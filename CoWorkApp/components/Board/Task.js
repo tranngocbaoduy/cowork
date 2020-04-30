@@ -9,13 +9,21 @@ export default class Task extends React.Component{
     }
 
     buildContent(){
-        const { data } = this.props; 
-        let _content = [];  
-        for (let index in data){ 
-            _content.push(<TaskComponent
-                key={index} 
-                data={data[index]} ></TaskComponent>)
-        }  
+        const { data, resultSearch } = this.props; 
+        let _content = [];   
+        if (data.length == 0) {
+            if (resultSearch) {
+                _content.push(<Text key="1">{resultSearch}</Text>)
+            } else { 
+                _content.push(<Text key="1">No task. Create a new one !!!</Text>)
+            }
+        } else {
+            for (let index in data) {
+                _content.push(<TaskComponent
+                    key={index}
+                    data={data[index]} ></TaskComponent>)
+            }
+        } 
         return _content;
     }
  

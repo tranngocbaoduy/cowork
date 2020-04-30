@@ -7,6 +7,9 @@ import { connect } from 'react-redux'
 import NewBoardComponent from '../../components/Board/NewBoardComponent';
 import NewCategoryComponent from '../../components/Board/NewCategoryComponent';
 import NewTaskComponent from '../../components/Board/NewTaskComponent';
+import UpdateBoardComponent from '../../components/Board/UpdateBoardComponent'
+import UpdateCategoryComponent from '../../components/Board/UpdateCategoryComponent'
+import UpdateTaskComponent from '../../components/Board/UpdateTaskComponent'
 
 class MiddleScreen extends React.PureComponent{
     
@@ -36,12 +39,15 @@ class MiddleScreen extends React.PureComponent{
           BackgroundColor: '#FF3D00',
           HeaderTintColor: '#fff',
         });
-    };
-    
+    }; 
 
     buildContent(){ 
         const { task, navigation } = this.props;   
-        let dataFriend = navigation.getParam('dataFriend');  
+        let dataFriend = []
+        if (navigation.getParam('dataFriend')) {
+            dataFriend = navigation.getParam('dataFriend');  
+        }
+         
         let typeCreate = navigation.getParam('typeCreate');   
         let _content = [];   
         if(typeCreate == 0){
@@ -50,7 +56,18 @@ class MiddleScreen extends React.PureComponent{
             _content.push(<NewCategoryComponent key='1' dataFriend={dataFriend} data={task}>Task</NewCategoryComponent>);
         } else if(typeCreate == 2){
             _content.push(<NewTaskComponent key='1' dataFriend={dataFriend} data={task}>Task</NewTaskComponent>);
+        } else if (typeCreate == 3) {
+            let data = navigation.getParam('data');  
+            _content.push(<UpdateBoardComponent key='1' dataFriend={dataFriend} data={data}></UpdateBoardComponent>);
+        } else if (typeCreate == 4) { 
+            let data = navigation.getParam('data');  
+            _content.push(<UpdateCategoryComponent key='1' dataFriend={dataFriend} data={data}></UpdateCategoryComponent>);
+        }  else if (typeCreate == 5) { 
+            let data = navigation.getParam('data');  
+            _content.push(<UpdateTaskComponent key='1' dataFriend={dataFriend} data={data}></UpdateTaskComponent>);
         } 
+
+
         return _content;
     }
 
@@ -65,7 +82,7 @@ class MiddleScreen extends React.PureComponent{
 
     render(){   
         const { loadedData } = this.state; 
-        const { backgroundColor } = this.props;
+        const { backgroundColor } = this.props; 
         if (!loadedData){
             this.loadData();
             return (<View style={[styles.containerLoading, styles.horizontal]}><ActivityIndicator size="large" color={backgroundColor} /></View>)

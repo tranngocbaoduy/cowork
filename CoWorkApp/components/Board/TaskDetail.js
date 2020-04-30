@@ -27,31 +27,51 @@ class TaskDetail extends React.PureComponent{
             content:this.props.data.content,
             seletedCategory: null,
             selectedBoard: null,
+            listImage: [],
+            listTag: [],
+            dataFriendChecked: [], 
+            dataFriend:[]
         }
         this.buildContent = this.buildContent.bind(this);
     }
 
     buildContent = async () =>{ 
         const { data } = this.props;
-        let dateTime = new Date(data.created_date['$date']);
-        let dateStart = new Date(data.date_start['$date']);  
-        let dateEnd = new Date(data.date_end['$date']);   
-        let selectedBoard, selectedCategory = null; 
-        try {
+        try { 
+            let dateStart = new Date(data.date_start['$date']);  
+            let dateEnd = new Date(data.date_end['$date']);   
+            let listImage = data.images
+            let listTag = data.tags
+            let selectedBoard, selectedCategory = null; 
+        
             selectedCategory = await AsyncStorage.getItem('selectedCategory');
             selectedBoard = await AsyncStorage.getItem('seletedBoard'); 
+
+            this.setState({
+                startTime: dateStart, 
+                endTime: dateEnd,
+                loaded: true,
+                selectedBoard: JSON.parse(selectedBoard),
+                selectedCategory: JSON.parse(selectedCategory),
+                listImage: listImage,
+                listTag: listTag,
+                dataFriend: selectedBoard.list_user,
+                dataFriendChecked: data.list_user_task, 
+            }); 
         }catch(err) {
             console.log(err,'err');
         }  
-        this.setState({
-            startTime: dateStart, 
-            endTime: dateEnd,
-            loaded: true,
-            selectedBoard: JSON.parse(selectedBoard),
-            selectedCategory: JSON.parse(selectedCategory),
-        }); 
-    }
-  
+     
+    } 
+
+    handlePhoto = async (listImage) => {
+        this.setState({listImage:listImage});
+    } 
+
+    handleTag = async (listTag) => {
+        this.setState({listTag:listTag}); 
+    } 
+
     onChangeStartTime = (currentDate) => { 
         const { showDatePickerStartTime } = this.state;
         this.setState({startTime:currentDate, showDatePickerStartTime: !showDatePickerStartTime}); 
@@ -62,6 +82,19 @@ class TaskDetail extends React.PureComponent{
         this.setState({finishTime:currentDate, showDatePickerFinishTime: !showDatePickerFinishTime}); 
     }; 
  
+
+    changeOptionFriend = (i) => { 
+        const { dataFriendChecked, dataFriend } = this.state;
+        if (dataFriendChecked.includes(dataFriend[i])){
+            dataFriendChecked.splice(dataFriendChecked.indexOf(dataFriend[i]),1);
+        }else{
+            dataFriendChecked.push(dataFriend[i])
+        } 
+        this.setState({
+            dataFriendChecked: dataFriendChecked
+        }) 
+    }
+
     render(){ 
         const { title, data, backgroundColor, headerTintColor, board } = this.props; 
         const { loaded, showDatePickerFinishTime, showDatePickerStartTime, selectedBoard} = this.state;
@@ -86,7 +119,8 @@ class TaskDetail extends React.PureComponent{
                    <Textarea
                         containerStyle={styles.textareaContainer}
                         style={styles.textarea}
-                        onChangeText={(text) => this.setState({content:text})}
+                        // onChangeText={(text) => this.setState({content:text})}
+                        onChangeText={() => Alert.alert("Can't modify text")}
                         defaultValue={data.content}
                         maxLength={1000}
                         placeholder={'What will you do in this task ? Are you thinking ?'}
@@ -106,7 +140,8 @@ class TaskDetail extends React.PureComponent{
                         <DateTimePickerModal
                             isVisible={showDatePickerStartTime}
                             mode="datetime"
-                            onConfirm={this.onChangeStartTime}
+                            // onConfirm={this.onChangeStartTime}
+                            onConfirm={() => Alert.alert("Can't modify date")}
                             onCancel={() =>  this.setState({showDatePickerStartTime: !showDatePickerStartTime})}
                         /> 
                     </TouchableOpacity>  
@@ -123,15 +158,16 @@ class TaskDetail extends React.PureComponent{
                         <DateTimePickerModal
                             isVisible={showDatePickerFinishTime}
                             mode="datetime"
-                            onConfirm={this.onChangeFinishTime}
+                            // onConfirm={this.onChangeFinishTime} 
+                            onConfirm={() => Alert.alert("Can't modify date")}
                             onCancel={() =>  this.setState({showDatePickerFinishTime: !showDatePickerFinishTime})}
                         /> 
                     </TouchableOpacity> 
                 </View>  
-                <MemberComponent data={selectedBoard.list_user}  dataJoin={data.list_user_task}></MemberComponent>
-                <TagComponent data={data.tags}></TagComponent>
+                <MemberComponent changeOptionFriend={this.changeOptionFriend} data={selectedBoard.list_user}  dataJoin={data.list_user_task}></MemberComponent>
+                <TagComponent handleTag={this.handleTag} data={data.tags}></TagComponent>
                 {/* <AttachmentComponent data={["ab","a"]}></AttachmentComponent> */}
-                <ImageComponent data={data.images}></ImageComponent>
+                <ImageComponent handlePhoto={this.handlePhoto} type={0} isUpload={true} data={data.images}></ImageComponent>
                 <CommentComponent data={["ab","a"]}></CommentComponent>
              
                 {/* <View style={styles.inputContainer}> 

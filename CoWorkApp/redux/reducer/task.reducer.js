@@ -22,24 +22,52 @@ export function taskReducer(state = initalState, action) {
                 error: action.error,
                 failed: true,
             }    
+        
+        
         case taskConstants.CREATE_TASK_REQUEST: 
             return {  
                 ...state,
                 loading: true,
             }  
         case taskConstants.CREATE_TASK_SUCCESS: 
-            return {
-                ...state,  
-                ...state.task,
-                task:state.task.push(action.data), 
-                taskCreated: action.data,
+            return {  
                 loading: false
-            }   
+            }    
         case taskConstants.CREATE_TASK_FAILED: 
             return {
                 error: action.error,
                 failed: true,
-            }        
+            }    
+        
+        case taskConstants.UPDATE_TASK_REQUEST: 
+            return {  
+                ...state,
+                loading: true,
+            }  
+        case taskConstants.UPDATE_TASK_SUCCESS: 
+            return {  
+                loading: false
+            }   
+        case taskConstants.UPDATE_TASK_FAILED: 
+            return {
+                error: action.error,
+                failed: true,
+            }   
+        
+        case taskConstants.DELETE_TASK_REQUEST: 
+            return {   
+                loading: true,
+            }  
+        case taskConstants.DELETE_TASK_SUCCESS: 
+            return {  
+                task: null,
+                loading: false
+            }   
+        case taskConstants.DELETE_TASK_FAILED: 
+            return {
+                error: action.error,
+                failed: true,
+            }       
         default:
             return state;
     }

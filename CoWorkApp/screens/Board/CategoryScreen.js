@@ -1,14 +1,14 @@
 import React from 'react';
-import { StyleSheet, ScrollView , View, ActivityIndicator, TouchableOpacity} from 'react-native'; 
+import { StyleSheet, SafeAreaView, View, ActivityIndicator, FlatList, TouchableOpacity , RefreshControl} from 'react-native'; 
 import Category from '../../components/Board/Category' 
-import { connect } from 'react-redux'
-
+import { connect } from 'react-redux' 
+import {AsyncStorage} from 'react-native'
 import { categoryAction } from '../../redux/action/category.action'
 import { wait } from '../../helper/wait';
 import Ionicons from 'react-native-vector-icons/Ionicons'; 
 import * as NavigationService from '../../redux/service/navigator.service';
 
-class CategoryScreen extends React.PureComponent{
+class CategoryScreen extends React.Component{
     
     static navigationOptions = ({navigation}) => {     
         const { headerTintColor, backgroundColor, navigationName} = navigation.state.params;  
@@ -19,20 +19,7 @@ class CategoryScreen extends React.PureComponent{
             },
             headerTintColor: navigation.getParam('HeaderTintColor', headerTintColor), 
         };
-    };
-    
-    // static navigationOptions = ({ navigation }) => {
-    //     return {
-    //       title: navigation.getParam('Title', 'Default Title'),
-    //       //Default Title of ActionBar
-    //       headerStyle: {
-    //         backgroundColor: navigation.getParam('BackgroundColor', '#ED2525'),
-    //         //Background color of ActionBar
-    //       },
-    //       headerTintColor: navigation.getParam('HeaderTintColor', '#fff'),
-    //       //Text color of ActionBar
-    //     };
-    //   };
+    }; 
 
     constructor(props){
         super(props); 
@@ -40,12 +27,10 @@ class CategoryScreen extends React.PureComponent{
             backgroundColor: '', 
             loadedData: false, 
         }
-        this.buildContent = this.buildContent.bind(this);
+        this.buildContent = this.buildContent.bind(this); 
     }
 
-    apply_Orange = () => {
-        //Function to change Title, 
-        //BackgRound Color and Text Color
+    apply_Orange = () => { 
         this.props.navigation.setParams({
           Title: 'Orange Activity',
           BackgroundColor: '#FF3D00',
@@ -54,36 +39,29 @@ class CategoryScreen extends React.PureComponent{
     };
      
     loadData = async () => {  
-        const { navigation, dispatch, category } = this.props; 
-        let data = navigation.getParam('data');
-        let mapId = data.map(id => id["$oid"]);  
-        console.log("category loading ...");
-
-        await dispatch(categoryAction.getByIds(mapId));
-        this.setState({
-            loadedData: true
-        });
-        // wait(500).then(() => { 
-        //     if (category){
-        //         this.setState({
-        //             category:  this.props.category ?  this.props.category :[],
-        //             loadedData: true,
-        //         }); 
-        //     }else{
-        //         wait(5000).then(() => {
-        //             console.log("Time out 404");
-        //             this.setState({
-        //                 loadedData: true
-        //             })
-        //         })
-        //     }
-           
-        // }); 
+        let selectedBoard = JSON.parse(await AsyncStorage.getItem('seletedBoard'));   
+        const { board, dispatch, category } = this.props;    
+        if (board && selectedBoard) {
+            let b = board.find((item) => item[0]['_id']['$oid'] == selectedBoard['_id']['$oid']) 
+            if (b[0]) {
+                let info = { id: b[0]['_id']['$oid'] }
+                console.log("category loading ...");
+                dispatch(categoryAction.getByIds(info)); 
+                if (category){
+                    this.setState({
+                        category: category,
+                        loadedData: true,
+                    });  
+                } 
+            } else {
+                console.log("Error loading..."); 
+            } 
+        } 
     }
 
     floatingAddButton = () => {
         const { backgroundColor,headerTintColor, board } = this.props;   
-        if (board){ 
+        if (board) {  
             let filterFriend = []; 
             board.reduce((res,item) => res.concat(item[0].list_user),[])
                 .filter(item=> filterFriend.includes(item)? null : filterFriend.push(item)); 
@@ -109,43 +87,55 @@ class CategoryScreen extends React.PureComponent{
         } 
     }
 
+    onRefresh = () => {   
+        this.setState({ loadedData: false });  
+        this.loadData();  
+        console.log("Refresh ... ");  
+    } 
 
-    buildContent = () => {     
-        const { navigation , category} = this.props;
+    buildContent = () => {      
+        const { navigation, category } = this.props;
+        const { loadedData } = this.state;
         let nameBoard = navigation.getParam('nameBoard');    
         let _content = [];   
-        if (category){
-            _content.push(<Category key="cate" title={nameBoard} data={category}>{category.name}</Category>); 
+        if (category){ 
+            _content.push(
+                <FlatList 
+                    key ="cate"
+                    data={[category]}
+                    renderItem={({item})=> <Category key="cate" title={nameBoard} data={item}>{item.name}</Category>}
+                    keyExtractor={(item,index)=> `${index}`}
+                    refreshControl={<RefreshControl onRefresh={this.onRefresh}/> }> 
+                </FlatList> 
+            )
         } 
-        return _content;
+
+        return _content
+    }
+
+    componentDidMount() {
+        this.loadData();
     }
 
     render(){   
-        const { loadedData } = this.state;
-        const { backgroundColor } = this.props;
-
-        const { navigation } = this.props;
-        let isRefresh = navigation.getParam('refresh');
-        if (isRefresh){
-            this.loadData();
-            return (<View style={[styles.containerLoading, styles.horizontal]}>
-                    <ActivityIndicator size="large" color={backgroundColor}/>
-                </View>)
-        }
-        if (!loadedData) {
-            this.loadData();
+        const { loadedData } = this.state; 
+        const { navigation,  backgroundColor, category, loadAgain } = this.props;
+        let isRefresh = navigation.getParam('refresh');   
+        if (!category) { 
+            if (isRefresh) { 
+                this.loadData();
+            }
             return (
                 <View key={1} style={[styles.containerLoading, styles.horizontal]}>
                     <ActivityIndicator size="large" color={backgroundColor}  />
                 </View>
             )
-        } else {  
-
+        } else { 
             return (  
                 <View style={styles.container}>
-                    <ScrollView >
+                    <SafeAreaView >
                         { this.buildContent() }
-                    </ScrollView>
+                    </SafeAreaView>
                     {this.floatingAddButton()}
                 </View>
             );
@@ -195,10 +185,10 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(store) { 
     const {  backgroundColor,headerTintColor } = store.themeReducer;
-    const { category,loadedData } = store.categoryReducer; 
+    const { category, loadAgain } = store.categoryReducer;  
     const { board } = store.boardReducer; 
     return {
-        category, board, backgroundColor,headerTintColor, loadedData
+        category, board, backgroundColor,headerTintColor, loadAgain
     } 
 }
   

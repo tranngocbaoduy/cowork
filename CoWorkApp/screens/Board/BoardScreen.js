@@ -10,7 +10,7 @@ import { boardAction } from '../../redux/action/board.action';
 import { AsyncStorage } from 'react-native'; 
 import Ionicons from 'react-native-vector-icons/Ionicons'; 
 
-class BoardScreen extends React.PureComponent{
+class BoardScreen extends React.Component{
   
     static navigationOptions = ({navigation}) => {   
         return {
@@ -33,9 +33,9 @@ class BoardScreen extends React.PureComponent{
             dataRecent:[],
             dataSearch:[],
             closeSearch: true,
-            content: [],  
-
-        }
+            content: [],   
+            wantRefresh: false
+        } 
     }
 
     checkMode(){ 
@@ -74,6 +74,7 @@ class BoardScreen extends React.PureComponent{
         const { dataRecent, dataAll } = this.state; 
         let selectedBoard = await dataAll.find(item=>item.id_board === idBoard);
         await AsyncStorage.setItem('seletedBoard', JSON.stringify(selectedBoard));  
+        console.log(selectedBoard,"choose")
         let isExist = dataRecent.find(item => item.id_board === idBoard); 
         if (!isExist){ 
             if( dataRecent.length > 2){
@@ -89,28 +90,25 @@ class BoardScreen extends React.PureComponent{
         return new Promise((resolve) => true);
     }
 
-    loadData = async () => { 
-        const { dispatch, board } = this.props;  
+    loadData = () => { 
+        const { dispatch, board, user } = this.props;
+        
+        console.log(user,'userrr')
         const { loadedData } = this.state;    
-        await dispatch(boardAction.getAll({"username":"admin"}));  
+        dispatch(boardAction.getAll({"username": user.username}));  
         console.log('Loading data...'); 
         wait(200).then(() => {   
             if (board){  
                 console.log('Update data...');
-                this.setState({dataAll: board.map(b => b[0]),loadedData: true});  
-            }else{
-                wait(5000).then(() => {
-                    console.log("Time out 404");
-                    this.setState({
-                        loadedData: true
-                    })
-                })
-            } 
+                this.setState({dataAll: board.map(b => b[0])});  
+            }
+            this.setState({ loadedData: true });
         });       
     }
 
     onRefresh = () => {   
-        this.setState({loadedData: false});  
+        this.setState({ loadedData: false })
+        this.loadData();
         console.log("Refresh ... ");  
     } 
 
@@ -118,7 +116,7 @@ class BoardScreen extends React.PureComponent{
         const { backgroundColor,headerTintColor, board } = this.props; 
         if (board && board.length > 0){ 
             let filterFriend = []; 
-            board.reduce((res,item) => res.concat(item[0].list_user),[])
+            board.reduce((res,item) =>item[0]?res.concat(item[0].list_user): res.concat(""),[])
                 .filter(item=> filterFriend.includes(item)? null : filterFriend.push(item)); 
             const Icon = ({ name }) => (
                 <Ionicons style={{backgroundColor:headerTintColor,color:backgroundColor, borderRadius:10}} size={38}
@@ -142,8 +140,29 @@ class BoardScreen extends React.PureComponent{
         } 
     }
 
+    setData = () => { 
+        const { board } = this.props;
+        while (true) { 
+            if (board) {
+                this.setState({
+                    dataAll: board.map(b => b[0]),
+                    loadedData: true,
+                });
+                break;
+            }
+            wait(500).then(() => {
+            }); 
+        }  
+    }
+
     buildContent = () => {   
         const { dataAll, dataRecent, keyWord, dataSearch, closeSearch, loadedData } = this.state;
+        const { board } = this.props;
+        let filterFriend = []; 
+        if (dataAll) {
+            dataAll.reduce((res,item) =>item?res.concat(item.list_user): res.concat(""),[])
+                .filter(item=> filterFriend.includes(item)? null : filterFriend.push(item)); 
+        } 
         let _content = [];  
         let sp = [];
         sp.push(<SearchInBoard keyWord={keyWord} 
@@ -152,11 +171,10 @@ class BoardScreen extends React.PureComponent{
             style={styles.search} key='1'
             closeSearch={closeSearch}></SearchInBoard>)
         _content.push(<SafeAreaView key='4'>{sp}</SafeAreaView>);
-        _content.push(!isEmpty(keyWord) && <Board  style={styles.containerInfo} key='2' title="Search board" onChoose={this.chooseBoard} data={dataSearch}></Board>);  
-        _content.push(isEmpty(keyWord) &&<Board  style={styles.containerInfo} key='2' title="Recent board" onChoose={this.chooseBoard} data={dataRecent}></Board>);  
-        _content.push(isEmpty(keyWord) &&<Board style={styles.containerInfo} key='3' title="All your board" onChoose={this.chooseBoard} data={dataAll}></Board>);  
+        _content.push(!isEmpty(keyWord) && <Board dataFriend={filterFriend} style={styles.containerInfo} key='2' title="Search board" onChoose={this.chooseBoard} data={dataSearch}></Board>);  
+        _content.push(isEmpty(keyWord) &&<Board dataFriend={filterFriend} style={styles.containerInfo} key='2' title="Recent board" resultSearch="No recent" onChoose={this.chooseBoard} data={dataRecent}></Board>);  
+        _content.push(isEmpty(keyWord) &&<Board dataFriend={filterFriend} style={styles.containerInfo} key='3' title="All your board" onChoose={this.chooseBoard} data={dataAll}></Board>);  
         
-
         return(
         <View key='board' style={styles.container}>
             <SafeAreaView>
@@ -172,33 +190,34 @@ class BoardScreen extends React.PureComponent{
         ) 
     }
 
-    componentDidMount(){
+    componentDidMount() { 
         const { backgroundColorState, loadedData } = this.state; 
-        const { backgroundColor } = this.props; 
-        if (loadedData){
-            let isRefresh = this.props.navigate.getParam('refresh');
-            if(isRefresh){
-                this.setState({
-                    loadedData: true
-                });
-            }
-        }
+        const { backgroundColor, board } = this.props;  
      
         if( backgroundColorState != backgroundColor){
             this.checkMode();
+        }  
+        if (!board) { 
+            this.loadData();
         }
     }
 
     render(){     
-        const { loadedData } = this.state;  
-        const { backgroundColor, board } = this.props; 
-        if (!loadedData || !board){
-            this.loadData();
+        const { dataAll, backgroundColorState } = this.state;  
+        const { backgroundColor, navigation, board, loadAgain } = this.props; 
+        let refresh = navigation.getParam('refresh');   
+        if (!board) {   
+            if (refresh ||  loadAgain) {
+                this.loadData();
+            }    
             return (
             <View style={[styles.containerLoading, styles.horizontal]}>
                 <ActivityIndicator size="large" color={backgroundColor}/>
             </View>)
-        } else {
+        } else { 
+            if (dataAll.length != board.length) {
+                this.setData();
+            }            
             return (this.buildContent() );
         } 
     };
@@ -247,10 +266,11 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(store) {
     const { backgroundColor, headerTintColor } = store.themeReducer;
-    const { data, loading, board } = store.boardReducer; 
+    const { data, loading, board, loadAgain } = store.boardReducer; 
+    const { user } = store.accountReducer;
     console.log("Length board",board?board.length:null);
     return {
-        backgroundColor, headerTintColor, loading, data, board
+        backgroundColor, headerTintColor, loading, data, board, loadAgain, user
     }
 }
  

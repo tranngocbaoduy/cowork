@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, ScrollView , View, ActivityIndicator, TouchableOpacity} from 'react-native'; 
+import { StyleSheet, ScrollView , View, ActivityIndicator, RefreshControl, FlatList, SafeAreaView ,TouchableOpacity} from 'react-native'; 
 import Task from '../../components/Board/Task'
 
 import { wait } from '../../helper/wait';
@@ -26,9 +26,9 @@ class TaskScreen extends React.PureComponent{
         super(props); 
         this.state = {
             backgroundColor: '',
-            loadedData:false,
+            loadedData: false,  
         }
-        this.buildContent = this.buildContent.bind(this);
+        this.buildContent = this.buildContent.bind(this);  
     }
 
     apply_Orange = () => { 
@@ -65,29 +65,55 @@ class TaskScreen extends React.PureComponent{
             </TouchableOpacity>
             )
         } 
-    }
+    } 
 
-    
+    onRefresh = () => {   
+        this.setState({ loadedData: false });  
+        this.loadData();
+        console.log("Refresh ... ");  
+    }   
 
     buildContent(){ 
-        const { task, navigation } = this.props;   
+        const { task, navigation } = this.props; 
+        const { loadedData } = this.state;
         let nameCategory = navigation.getParam('nameCategory');  
-        let _content = []; 
-        _content.push(<Task key='1' title={nameCategory} data={task}>Task</Task>);
+        let _content = [];  
+        if (task) {   
+            _content.push(
+                <FlatList 
+                    key ="task"
+                    data={[task]}
+                    renderItem={({item})=> <Task key="task-component" title={nameCategory} data={item}>{item.name}</Task>}
+                    keyExtractor={(item,index)=> `${index}`}
+                    refreshControl={<RefreshControl refreshing={!loadedData} onRefresh={this.onRefresh}/> }> 
+                </FlatList> 
+            )
+        }  
+       
         return _content;
     }
 
-  
+    componentDidMount() { 
+        this.loadData()
+    } 
+
     loadData = async () => {  
-        const { navigation, dispatch, task } = this.props; 
-        let data = navigation.getParam('data');    
-        let mapId = data.map(id => id["$oid"]);  
         console.log("Task loading ...");
-        await dispatch(taskAction.getByIds(mapId));
+        let selectedCategory = JSON.parse(await AsyncStorage.getItem('selectedCategory'));   
+        const { dispatch, task } = this.props;   
+        let info = { 
+            id: selectedCategory['_id']["$oid"]
+        }
+        dispatch(taskAction.getByIds(info));
         wait(200).then(() => {
             if(task){  
                 this.setState({
                     task:task,
+                    loadedData: true,
+                });
+            } else {
+                console.log("Time out 404")
+                this.setState({ 
                     loadedData: true,
                 });
             }
@@ -96,17 +122,19 @@ class TaskScreen extends React.PureComponent{
 
     render(){   
         const { loadedData } = this.state; 
-        const { backgroundColor } = this.props;
-        if (!loadedData){
-            this.loadData();
+        const { navigation, backgroundColor, task } = this.props;
+        let refresh = navigation.getParam('refresh');
+        if (!task) { 
+            if (refresh) {
+                this.loadData();
+            }
             return (<View style={[styles.containerLoading, styles.horizontal]}><ActivityIndicator size="large" color={backgroundColor} /></View>)
         } else {
             return (
-                <View style={styles.container}>
-
-                    <ScrollView >
+                <View style={styles.container}> 
+                    <SafeAreaView >
                         {this.buildContent()}
-                    </ScrollView>
+                    </SafeAreaView>
                     {this.floatingAddButton() }
                 </View> 
             );

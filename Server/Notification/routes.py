@@ -7,7 +7,7 @@ from flask import request, render_template, Blueprint, send_from_directory, curr
 
 from Server import bcrypt 
 from Server.helper import Respone, save_picture, convert_and_save
-from Server.model import User, Board, Category, Customer
+from Server.model import User, Board, Category, Customer, Notification
 from bson.json_util import dumps
 from PIL import Image
 
@@ -45,6 +45,45 @@ def get_device():
     answer = Respone(False, data, "Get Data")  
     return json.dumps(answer)  
 
+
+@notificationBP.route("/api/notification/get_by_id",methods=['POST']) 
+def get_by_id():  
+    info = request.get_json()['info'] 
+    print(info)
+    username = info['username'] 
+    user = User.objects(username=username).first()
+    if user is not None:
+        noties = []
+        for item in user.list_notifications: 
+            noties.append(item.to_json())   
+        answer = Respone(True, noties, "Get notifications success")
+    else:
+        answer = Respone(True, {}, "Can't find username")
+    print(answer)
+    return json.dumps(answer)  
+
+
+@notificationBP.route("/api/notification/check",methods=['POST']) 
+def check_id():  
+    info = request.get_json()['info'] 
+    id_noti = info['idNoti'] 
+    username = info['username'] 
+    user = User.objects(username=username).first()
+    if user is not None:
+        noties = []
+        for item in user.list_notifications: 
+            noti = Notification.objects(id=item.id).first()
+            print(id_noti, noti.id)
+            if str(noti.id) == str(id_noti) :
+                print("cheked",noti.id)
+                noti.is_checked = True
+            noti.save()
+            noties.append(noti.to_json())   
+        answer = Respone(True, noties, "Get notifications success")
+    else:
+        answer = Respone(True, {}, "Can't find username")
+    print(answer)
+    return json.dumps(answer)  
 # @notificationBP.route("/api/category/get_by_ids",methods=['POST'])  
 # def get_by_ids():
 #     print(request.get_json())

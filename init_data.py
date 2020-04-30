@@ -18,12 +18,12 @@ def connect_db():
 
 def create_board(): 
 
-    admin = User(username="admin",password=bcrypt.generate_password_hash("1").decode('utf-8'),email="admin@gmail.com",phone="0793335049",
-        first_name="Tamaki",last_name="Yui",image_file="static/avatar/ava.jpg",role=Role(name="admin").save()).save() 
-    user1 = User(username="user1",password=bcrypt.generate_password_hash("1").decode('utf-8'),email="user1@gmail.com",phone="0237281726",
-        first_name="User",last_name="Hokage",image_file="static/avatar/ava.jpg",role=Role(name="user").save()).save()
-    user2 = User(username="user2",password=bcrypt.generate_password_hash("1").decode('utf-8'),email="user2@gmail.com",phone="0142221020",
-        first_name="Hikari",last_name="Namida",image_file="static/avatar/ava.jpg",role=Role(name="user").save()).save()
+    admin = User(username="tamaki",password=bcrypt.generate_password_hash("1").decode('utf-8'),email="admin@gmail.com",phone="0793335049",
+        first_name="Tamaki",last_name="Yui",image_file="static/avatar/ava.jpg").save() 
+    user1 = User(username="hokage",password=bcrypt.generate_password_hash("1").decode('utf-8'),email="user1@gmail.com",phone="0237281726",
+        first_name="User",last_name="Hokage",image_file="static/avatar/ava.jpg").save()
+    user2 = User(username="naruto",password=bcrypt.generate_password_hash("1").decode('utf-8'),email="user2@gmail.com",phone="0142221020",
+        first_name="Hikari",last_name="Namida",image_file="static/avatar/ava.jpg").save()
 
     Board(id_board="EL001",name="English", tags=["red","pink"],images=["static/board/english.png","static/board/neural.png"],
         info="This is course about english. ",
@@ -39,6 +39,7 @@ def create_board():
                 list_user_task=[admin,user2]).save(),
             ],
             images=["static/task/draw.png","static/task/topic_1.png"],
+            list_user=[admin,user1]
             ).save(),
             Category(name="Reading", content="This is topic reading", list_task=[
                 Task(name="Lecture 01",images=["static/task/draw.png","static/task/draw_2.png"], 
@@ -50,7 +51,8 @@ def create_board():
                 tags=['#FFAA53','#B4FF3A','#FFBB53'],
                 list_user_task=[admin,user1]).save()
             ], 
-            images=["static/task/draw_2.png","static/task/topic_2.png"]).save()
+            images=["static/task/draw_2.png","static/task/topic_2.png"], 
+            list_user=[admin,user1]).save()
         ],
         list_user=[admin,user1,user2]
     ).save()

@@ -17,6 +17,7 @@ def login():
     info = request.get_json()['info']
     username = info['username']
     password = info['password']
+    expo_token = info['expoPushToken']
     if current_user.is_authenticated: 
         # user = User.objects.filter(username=username).first()
         # token = user.get_login_token(600)
@@ -24,21 +25,29 @@ def login():
         answer = Respone(True, {}, "User have been already login")
         return json.dumps(answer)   
 
-    user = User.objects.filter(username=username).first()
-    if user and bcrypt.check_password_hash(user.password, password): 
+    user = User.objects(username=username).first()
+    if user is not None and bcrypt.check_password_hash(user.password, password): 
         time_expires = 600 #milisecond
-        login_user(user, remember=False,duration=time_expires) #save user login 
-        token = user.get_login_token(time_expires)
-        payload = {
-            "username":user.username,
-            "email":user.email, 
-            "role":user.role,
-            "token": token
-        } 
-        message="Login Successful"
-        answer = Respone(True, payload, message)   
+        login_user(user, remember=False,duration=time_expires,force=True) #save user login 
+
+        if current_user.is_anonymous is False:
+            token = user.get_login_token(time_expires) 
+            user.expo_token = expo_token
+            user.save()
+            payload = {
+                "username":user.username,
+                "email":user.email, 
+                "name":user.first_name + " " + user.last_name,
+                "expoToken": user.expo_token,
+                "token": token
+            } 
+            message="Login Successful"
+            answer = Respone(True, payload, message)   
+        else:
+            answer = Respone(False, {}, "Email or Password isn't correct")  
     else:
         answer = Respone(False, {}, "Email or Password isn't correct")  
+    print(answer)
     return json.dumps(answer)   
  
 @userBP.route("/api/register", methods=['POST'])

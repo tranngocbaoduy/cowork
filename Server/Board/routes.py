@@ -6,8 +6,9 @@ from flask_login import login_user, current_user, logout_user, login_required
 from flask import request, render_template, Blueprint, send_from_directory, current_app,redirect, url_for,flash, Response   
 
 from Server import bcrypt 
-from Server.helper import Respone, save_picture, convert_and_save
-from Server.model import User, Board
+from Server.helper import Respone, save_picture, convert_and_save, send_notification
+from Server.model import User, Board, Category, Task, Notification
+
 
 
 boardBP = Blueprint('board', __name__) 
@@ -65,7 +66,34 @@ def get_all():
      
     answer = Respone(True, boards, "Get boards success")   
     return dumps(answer)
+
+@boardBP.route("/api/board/search_all",methods=['POST'])  
+def search_all():
+    print(request.get_json())
+    info = request.get_json()['info'] 
+    username = info['username']
+    query = info['query'] 
+    if query != "":
+        list_board = Board.objects(name__icontains=query).limit(3)
+        list_cate = Category.objects(name__icontains=query).limit(3)
+        list_task = Task.objects(name__icontains=query).limit(3)
+        boards = []
+        cates = []
+        tasks = [] 
         
+        for item in list_board: 
+            for user in item.list_user:
+                if user.username == username:
+                    boards.append(item.to_json()) 
+        for item in list_cate:  
+            cates.append(item.to_json()) 
+        for item in list_task:  
+            tasks.append(item.to_json())  
+        answer = Respone(True, {"boards":boards, "cates":cates, "tasks":tasks}, "Search success")
+    else:
+        answer = Respone(True, {"boards":[], "cates":[], "tasks":[]}, "Search success")
+    print(answer)
+    return dumps(answer)     
 
 @boardBP.route("/api/board/create",methods=['POST'])  
 def create(): 
@@ -77,20 +105,133 @@ def create():
     friend = info['dataFriendChecked']
     list_image = info['listImage']
     images = info['images']
-    list_path = []
+    list_path = [] 
+    tokens = []
     for im in images: 
         list_path.append(convert_and_save(im, "Board"))
 
-    list_user = []
-    for username in friend:
-        list_user.append(User.objects(username=username).first())
 
     board = Board(id_board=code_board,name=name_board, tags=[],
         images=list_path,
         info=content,
         list_category=[],
-        list_user=list_user
     ).save()
-    answer = Respone(True, {board.to_json()}, "Create board success")   
+
+    list_user = []
+    for username in friend:
+        user = User.objects(username=username).first()
+        if user is not None:
+            list_user.append(user)
+            tokens.append(user.expo_token)
+
+            token = user.expo_token
+            message = current_user.username + " has just created board " + board.name + " successfully"
+            id_board = board.id
+            id_category = ""
+            id_task = ""
+            name = board.name
+            image = board.images[0]
+            activity = "create"
+            obj = "board"
+            send_notification(token=token, message=message, user=user.username,
+                     id_board=id_board,id_category=id_category,id_task=id_task, activity=activity, obj=obj, name=name, image=image)
+    board.list_user = list_user
+    board.save()
+
+    result = []
+    result.append(tokens)
+    result.append(board.to_json())
+    
+    answer = Respone(True, result, "Create board success")  
+    print(answer)
+    return dumps(answer)
+        
+
+@boardBP.route("/api/board/update",methods=['POST'])  
+def update():  
+    info = request.get_json()['info'] 
+    code_board = info['codeBoard']
+    name_board = info['nameBoard']
+    content = info['content']
+    create_time = info['createTime'] 
+    friend = info['dataFriendChecked']
+    list_image = info['listImage']
+    images = info['images']
+    list_path = []
+    tokens = []
+    board  = Board.objects(id_board=code_board).first()
+    if board is not None:
+        board.name = name_board
+        board.info = content  
+   
+
+        if images != "none":
+            for im in images: 
+                list_path.append(convert_and_save(im, "Board"))
+
+        list_user = []
+        for username in friend:
+            user = User.objects(username=username).first()
+            
+            token = user.expo_token
+            message = current_user.username + " has just updated board " + board.name + " successfully. Go to see now >_<"
+            id_board = board.id
+            name = board.name
+            image = board.images[0]
+            id_category = ""
+            id_task = ""
+            activity = "update"
+            obj = "board"
+            send_notification(token=token, message=message, user=user.username,
+                     id_board=id_board,id_category=id_category,id_task=id_task, activity=activity, obj=obj, name=name, image=image)
+
+            tokens.append(user.expo_token)
+            list_user.append(user)
+
+
+        board.list_user = list_user 
+        board.save()
+
+        result = []
+        result.append(tokens)
+        result.append(board.to_json())
+        answer = Respone(True, result, "Update board success")  
+        print(answer)
+    else:
+        answer = Respone(False, {}, "Can't find board ")  
+   
+    return dumps(answer)
+
+@boardBP.route("/api/board/remove",methods=['POST'])  
+def remove():  
+    info = request.get_json()['info']  
+    id_board = info['id_board'] 
+    board  = Board.objects(id=id_board).first()
+   
+    if board is not None: 
+        result = []
+        tokens = []
+        for user in board.list_user:
+            tokens.append(user.expo_token)
+
+            token = user.expo_token
+            message = current_user.username + " has just removed board " + board.name + " !!!"
+            id_board = board.id
+            id_category = ""
+            id_task = ""
+            name = board.name
+            image = board.images[0]
+            activity = "remove"
+            obj = "board"
+            send_notification(token=token, message=message, user=user.username,
+                     id_board=id_board,id_category=id_category,id_task=id_task, activity=activity, obj=obj, name=name,image=image)
+
+        result.append(tokens)
+        result.append(board.to_json())
+        board.delete()
+        answer = Respone(True, result, "Remove board success")  
+        print(answer)
+    else:
+        answer = Respone(False, {}, "Can't find board ")   
     return dumps(answer)
         
