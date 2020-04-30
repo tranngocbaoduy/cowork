@@ -1,0 +1,8 @@
+# add this to podfile
+platform :ios, '8.0'
+project 'Pods/Pods.xcodeproj'
+target './CoWorkApp' do
+  pod 'RSKImageCropper'
+  pod 'QBImagePickerController'
+end
+#

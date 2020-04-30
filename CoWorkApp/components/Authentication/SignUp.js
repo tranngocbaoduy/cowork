@@ -63,7 +63,7 @@ export default class SignUp extends React.Component{
                 </View>
 
                 <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={() => this.onClickListener('login')}>
-                    <Text style={styles.loginText}>Sign in</Text>
+                    <Text style={styles.loginText}>Sign up</Text>
                 </TouchableHighlight> 
 
                 <TouchableHighlight >
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#DCDCDC',
+    //   backgroundColor: '#DCDCDC',
     },
     inputContainer: {
         borderBottomColor: '#F5FCFF',

@@ -4,8 +4,6 @@ import { accountAction } from '../../redux/action/account.action'
 
 import { isEmpty } from '../../helper/String'
 import {connect} from 'react-redux'
-import UserInfor from "./UserInfor";
-
 class Account extends React.Component{
     constructor(props){
         super(props); 
@@ -14,16 +12,14 @@ class Account extends React.Component{
     _logoutAsync = () => {
         const { dispatch, token } = this.props;
         dispatch(accountAction.logout()); 
-    };
+    }
 
     render(){ 
         return(
-            <View style={styles.container}>
-                <UserInfor/>
-               <TouchableHighlight style={[styles.buttonContainer, styles.logoutButton]} onPress={this._logoutAsync}>
+            <View style={styles.container}> 
+                <TouchableHighlight style={[styles.buttonContainer, styles.logoutButton]} onPress={this._logoutAsync}>
                     <Text style={styles.logoutText}>Logout</Text>
-                </TouchableHighlight>
-
+                </TouchableHighlight> 
             </View>
         );
     }
@@ -32,12 +28,16 @@ class Account extends React.Component{
  
 const styles = StyleSheet.create({
     container: {
-      justifyContent: 'center',
-      alignItems: 'center',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#FFF',
+        margin:10,
     },
     inputContainer: {
         borderBottomColor: '#F5FCFF',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#FFFFFF', 
+        borderColor: '#000', 
         borderRadius:30,
         borderBottomWidth: 1,
         width:250,
@@ -59,11 +59,11 @@ const styles = StyleSheet.create({
       justifyContent: 'center'
     },
     buttonContainer: {
-      height:45,
+      height:45, 
       marginTop:100,
       flexDirection: 'row',
       justifyContent: 'center',
-      alignItems: 'center',
+      alignItems: 'center', 
       width:250,
       borderRadius:30,
     },

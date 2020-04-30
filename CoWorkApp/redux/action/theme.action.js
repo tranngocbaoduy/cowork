@@ -5,11 +5,12 @@ export const themeActions = {
 };
 
 function changeMode(mode) {  
+    console.log("action",mode);
     return dispatch => { 
-        dispatch(request(mode))
-    
-    }; 
-    // } 
-    function request(mode) { return { type: themeConstants.CHANGE_MODE, mode } }
+        dispatch(request());
+        dispatch(success(mode));
+    };  
+    function request() { return { type: themeConstants.CHANGE_MODE } }
+    function success(mode) { return { type: themeConstants.CHANGE_MODE_SUCCESS, mode} }
 }
  

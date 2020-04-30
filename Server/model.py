@@ -6,10 +6,9 @@ from flask import current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin, logout_user
 
-
 @login_manager.user_loader
 def load_user(user_id): 
-    return User.objects.filter(email=user_id).first() 
+    return User.objects.filter(username=user_id).first() 
 
 class JsonSerializable(object):
     def toJson(self):
@@ -18,6 +17,21 @@ class JsonSerializable(object):
     def __repr__(self):
         return self.toJson()
  
+
+class Notification(db.Document):
+    token = db.StringField(required=True,default="")
+    message = db.StringField(required=True,default="")
+    user = db.StringField(required=True,default="")
+    id_board = db.StringField(required=True,default="")
+    id_category = db.StringField(required=True,default="")
+    id_task = db.StringField(required=True,default="")
+    activity = db.StringField(required=True,default="")
+    obj = db.StringField(required=True,default="")
+    name = db.StringField(required=True,default="")
+    image = db.StringField(required=True,default="")
+    is_checked = db.BooleanField(required=True,default=False)
+    created_date = db.DateTimeField(default = datetime.utcnow())
+
 class Vocabulary(db.Document): 
     hiragana = db.StringField(required=True)
     katakana = db.StringField()
@@ -31,16 +45,32 @@ class Vocabulary(db.Document):
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, 
             sort_keys=True, indent=4) 
-
+ 
+class Role(db.Document):
+    name = db.StringField(max_length=25,required=True)
+    is_activate = db.BooleanField(default=True)
 
 class User(db.Document, UserMixin,JsonSerializable):
     # query_class = UserModel
-    email = db.StringField(max_length=50,required=True, primary_key=True)
-    username = db.StringField(max_length=50,required=True)
+    phone = db.StringField(max_length=50,required=True)  
+    email = db.StringField(max_length=50,required=True)
+    first_name = db.StringField(max_length=1000,required=True, default="")
+    last_name = db.StringField(max_length=100,required=True, default="")
+    username = db.StringField(max_length=50,required=True, primary_key=True)
     image_file = db.StringField(max_length=50,required=True, default='avatar.png')
     password = db.StringField(max_length=100,required=True)
-    role = db.StringField(max_length=100,required=True)
-
+    # address = db.StringField(max_length=200,required=True, default="")
+    # role = db.StringField(max_length=100,required=True)
+    expo_token = db.StringField(max_length=100,required=True, default="")
+    created_date = db.DateTimeField(default = datetime.utcnow())  
+    list_notifications = db.ListField(db.ReferenceField(Notification, default=[]))
+    # birth = db.DateTimeField(default = datetime.utcnow())
+    # gender = db.StringField(max_length=10,required=True, default="") 
+    # status = db.BooleanField(default=True) 
+    # is_activate = db.BooleanField(default=True) 
+    # role = db.ReferenceField(Role, required=True)  
+    # is_confirmed = db.BooleanField(default=True) 
+    # list_friend = db.ListField(db.ReferenceField(ContactGroup,default=[])) 
     # get code token for reset password
     def get_reset_token(self, expires_sec = 1800):
         s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
@@ -70,4 +100,51 @@ class User(db.Document, UserMixin,JsonSerializable):
 
     def __repr__(self):
         return f"User('{self.username}','{self.email}','{self.password}','{self.image_file}','{self.role}')" 
-    
+
+class ContactGroup(db.Document):
+    name = db.StringField(required=True)
+    list_people = db.ListField(db.ReferenceField(User, default=[]))
+    created_date = db.DateTimeField(default = datetime.utcnow())
+
+class Task(db.Document):
+    name = db.StringField(required=True)
+    content = db.StringField(required=True)
+    date_start = db.DateTimeField(default = datetime.utcnow())
+    date_end = db.DateTimeField(default = datetime.utcnow())
+    images = db.ListField(db.StringField(required=True, default=[])) 
+    tags = db.ListField(db.StringField(required=True)) 
+    list_user_task = db.ListField(db.ReferenceField(User, default=[]))
+    created_date = db.DateTimeField(default = datetime.utcnow())
+    tags = db.ListField(db.StringField(required=True))
+
+
+class Category(db.Document):
+    name = db.StringField(required=True)
+    content = db.StringField(required=True)
+    tags = db.ListField(db.StringField(required=True))
+    list_task = db.ListField(db.ReferenceField(Task, default=[]))
+    list_user = db.ListField(db.ReferenceField(User, default=[]))
+    images = db.ListField(db.StringField(required=True, default=[]))
+    created_date = db.DateTimeField(default = datetime.utcnow())
+
+class Board(db.Document):
+    id_board = db.StringField(required=True)
+    name = db.StringField(required=True)
+    info = db.StringField(required=True)
+    tags = db.ListField(db.StringField(required=True))
+    images = db.ListField(db.StringField(required=True, default=[]))
+    list_category = db.ListField(db.ReferenceField(Category, default=[]))
+    list_user = db.ListField(db.ReferenceField(User, default=[]))
+    created_date = db.DateTimeField(default = datetime.utcnow())
+
+
+class Customer(db.Document):
+    token = db.StringField(required=True,primary_key=True)
+    altitude = db.StringField(required=True)
+    altitudeAccuracy = db.StringField(required=True)
+    latitude = db.StringField(required=True)
+    longitude = db.StringField(required=True) 
+    heading = db.StringField(required=True)
+    speed = db.StringField(required=True)  
+    created_date = db.DateTimeField(default = datetime.utcnow())
+ 

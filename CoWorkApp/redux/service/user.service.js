@@ -33,7 +33,7 @@ async function logout(){
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
-    }; 
+    };
     return await axios.post(DOMAIN + 'logout',{}, requestOptions)
             .then(handleResponse)
             .then(data => {  
@@ -49,8 +49,6 @@ function handleResponse(response) {
         }   
         const error = (data && data.message) || response.statusText;  
         return Promise.reject(error);
-    }   
-    
-    console.log(data)
+    }     
     return data.payload; 
 }
