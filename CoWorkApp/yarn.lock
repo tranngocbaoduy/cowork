@@ -4539,6 +4539,26 @@ react-native-audio@^4.3.0:
   resolved "https://registry.yarnpkg.com/react-native-audio/-/react-native-audio-4.3.0.tgz#fae22b81f6a4dda706fd4837d0c6a89c66cf2e7e"
   integrity sha512-QQYq28eSJy+y/Ukvry0AkbwMVELAj+LcEwCVRH+7sKLqlnoBBxGd4ilhgJHjwOiC70192LueGbjXJjPPEwW3iA==
 
+react-native-beacons-manager@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/react-native-beacons-manager/-/react-native-beacons-manager-1.0.7.tgz#b25a70e80f2b025013f3e2156e3ba59055078364"
+  integrity sha512-pTaVaM7lwQ2yiWAfU3lgsYvd+Y65YAKhID/axSmNqoPKAu2RdgLTUJUhYNYPOArWJCa6IdQ6OuMx5IqWl/gEIQ==
+
+react-native-ble-manager@^7.2.0:
+  version "7.6.3"
+  resolved "https://registry.yarnpkg.com/react-native-ble-manager/-/react-native-ble-manager-7.6.3.tgz#f7e0dc1397cfa70153ad70807d81daa67fefcfa9"
+  integrity sha512-cZqJ2apg9lk3MAqZAS43tpbVzVRO7zAyzeZb8FcyJqzMNEqC3CDAqWuV/QFRiqq219hIlJvwFD2ul7TwEB3ySg==
+
+react-native-bluetooth-state-manager@^1.1.1:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/react-native-bluetooth-state-manager/-/react-native-bluetooth-state-manager-1.3.2.tgz#bc729c0770d687473a6ed56b3ff5efb18d293dde"
+  integrity sha512-tWdctovK5oJ9gW5NHSwWfQxp52k9DKuoN36avzspp38eORR6YBw4ureR9/ZJl9fB3sC/YzmVIYGn7X6+2GC67w==
+
+react-native-bluetooth-state@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-bluetooth-state/-/react-native-bluetooth-state-2.0.0.tgz#a38eb7d68e0f5977375e41e20b5020ae27c3e800"
+  integrity sha1-o4631o4PWXc3XkHiC1AgrifD6AA=
+
 react-native-drop-down-item@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/react-native-drop-down-item/-/react-native-drop-down-item-1.1.0.tgz#63ff6d0c4245fcd35108c7f7707b43d6ea600bbf"
@@ -5571,9 +5591,9 @@ typedarray@^0.0.6:
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
 ua-parser-js@^0.7.18, ua-parser-js@^0.7.19:
-  version "0.7.21"
-  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.21.tgz#853cf9ce93f642f67174273cc34565ae6f308777"
-  integrity sha512-+O8/qh/Qj8CgC6eYBVBykMrNtp5Gebn4dlGD/kKXVkJNDwyrAwSIqwz8CDf+tsAIWVycKcku6gIXJ0qwx/ZXaQ==
+  version "0.7.31"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.31.tgz#649a656b191dffab4f21d5e053e27ca17cbff5c6"
+  integrity sha512-qLK/Xe9E2uzmYI3qLeOmI0tEOt+TBBQyUIAh4aAgU05FVYzeZrKUdkAZfBNVGRaHVgV0TDkdEngJSw/SyQchkQ==
 
 uglify-es@^3.1.9:
   version "3.3.9"
